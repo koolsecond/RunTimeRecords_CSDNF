@@ -34,20 +34,16 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.testLabel = new System.Windows.Forms.Label();
             this.processListLabel = new System.Windows.Forms.Label();
             this.processListView = new System.Windows.Forms.ListView();
             this.processName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.id = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.processPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.userModeTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.kernelTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.cpuTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.RunTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.creationDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.runTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.startTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -90,7 +86,6 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.testLabel);
             this.tabPage1.Controls.Add(this.processListLabel);
             this.tabPage1.Controls.Add(this.processListView);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -100,15 +95,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "監視状態";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // testLabel
-            // 
-            this.testLabel.AutoSize = true;
-            this.testLabel.Location = new System.Drawing.Point(233, 21);
-            this.testLabel.Name = "testLabel";
-            this.testLabel.Size = new System.Drawing.Size(35, 12);
-            this.testLabel.TabIndex = 2;
-            this.testLabel.Text = "label1";
             // 
             // processListLabel
             // 
@@ -123,14 +109,11 @@
             // 
             this.processListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.processName,
-            this.ID,
+            this.id,
             this.processPath,
-            this.Description,
-            this.startTime,
-            this.RunTime,
-            this.userModeTime,
-            this.kernelTime,
-            this.cpuTime});
+            this.description,
+            this.creationDate,
+            this.runTime});
             this.processListView.FullRowSelect = true;
             this.processListView.GridLines = true;
             this.processListView.HideSelection = false;
@@ -146,37 +129,27 @@
             this.processName.Text = "プロセス名";
             this.processName.Width = 100;
             // 
-            // ID
+            // id
             // 
-            this.ID.Text = "id";
+            this.id.Text = "id";
             // 
             // processPath
             // 
             this.processPath.Text = "ファイル名";
             // 
-            // Description
+            // description
             // 
-            this.Description.Text = "説明";
-            this.Description.Width = 100;
+            this.description.Text = "説明";
+            this.description.Width = 100;
             // 
-            // userModeTime
+            // creationDate
             // 
-            this.userModeTime.Text = "ユーザ時間";
-            this.userModeTime.Width = 100;
+            this.creationDate.Text = "プロセス生成時刻";
+            this.creationDate.Width = 100;
             // 
-            // kernelTime
+            // runTime
             // 
-            this.kernelTime.Text = "カーネル時間";
-            this.kernelTime.Width = 100;
-            // 
-            // cpuTime
-            // 
-            this.cpuTime.Text = "CPU時間";
-            this.cpuTime.Width = 100;
-            // 
-            // RunTime
-            // 
-            this.RunTime.Text = "計測時間";
+            this.runTime.Text = "実行時間";
             // 
             // tabPage2
             // 
@@ -193,11 +166,6 @@
             this.timer1.Enabled = true;
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
-            // 
-            // startTime
-            // 
-            this.startTime.Text = "計測開始時刻";
-            this.startTime.Width = 100;
             // 
             // MainForm
             // 
@@ -231,16 +199,12 @@
         private System.Windows.Forms.ListView processListView;
         private System.Windows.Forms.Label processListLabel;
         private System.Windows.Forms.ColumnHeader processName;
-        private System.Windows.Forms.ColumnHeader ID;
+        private System.Windows.Forms.ColumnHeader id;
         private System.Windows.Forms.ColumnHeader processPath;
-        private System.Windows.Forms.ColumnHeader userModeTime;
-        private System.Windows.Forms.ColumnHeader Description;
+        private System.Windows.Forms.ColumnHeader description;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Label testLabel;
-        private System.Windows.Forms.ColumnHeader kernelTime;
-        private System.Windows.Forms.ColumnHeader cpuTime;
-        private System.Windows.Forms.ColumnHeader RunTime;
-        private System.Windows.Forms.ColumnHeader startTime;
+        private System.Windows.Forms.ColumnHeader runTime;
+        private System.Windows.Forms.ColumnHeader creationDate;
     }
 }
 
