@@ -34,6 +34,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.saveButton = new System.Windows.Forms.Button();
             this.processListLabel = new System.Windows.Forms.Label();
             this.processListView = new System.Windows.Forms.ListView();
             this.processName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -86,6 +87,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.saveButton);
             this.tabPage1.Controls.Add(this.processListLabel);
             this.tabPage1.Controls.Add(this.processListView);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -95,6 +97,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "監視状態";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(580, 331);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(75, 23);
+            this.saveButton.TabIndex = 2;
+            this.saveButton.Text = "保存（仮）";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // processListLabel
             // 
@@ -164,7 +176,7 @@
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 500;
+            this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
             // 
             // MainForm
@@ -205,6 +217,7 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ColumnHeader runTime;
         private System.Windows.Forms.ColumnHeader creationDate;
+        private System.Windows.Forms.Button saveButton;
     }
 }
 
