@@ -36,12 +36,12 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.processListLabel = new System.Windows.Forms.Label();
             this.processListView = new System.Windows.Forms.ListView();
-            this.processName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.id = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.processPath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.creationDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.windowName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.processStartDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.runTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.totalRunTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.processId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.executablePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
@@ -108,12 +108,12 @@
             // processListView
             // 
             this.processListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.processName,
-            this.id,
-            this.processPath,
-            this.description,
-            this.creationDate,
-            this.runTime});
+            this.windowName,
+            this.processStartDate,
+            this.runTime,
+            this.totalRunTime,
+            this.processId,
+            this.executablePath});
             this.processListView.FullRowSelect = true;
             this.processListView.GridLines = true;
             this.processListView.HideSelection = false;
@@ -124,32 +124,34 @@
             this.processListView.UseCompatibleStateImageBehavior = false;
             this.processListView.View = System.Windows.Forms.View.Details;
             // 
-            // processName
+            // windowName
             // 
-            this.processName.Text = "プロセス名";
-            this.processName.Width = 100;
+            this.windowName.Text = "ウィンドウ名";
+            this.windowName.Width = 200;
             // 
-            // id
+            // processStartDate
             // 
-            this.id.Text = "id";
-            // 
-            // processPath
-            // 
-            this.processPath.Text = "ファイル名";
-            // 
-            // description
-            // 
-            this.description.Text = "説明";
-            this.description.Width = 100;
-            // 
-            // creationDate
-            // 
-            this.creationDate.Text = "プロセス生成時刻";
-            this.creationDate.Width = 100;
+            this.processStartDate.Text = "プロセス開始時刻";
+            this.processStartDate.Width = 150;
             // 
             // runTime
             // 
             this.runTime.Text = "実行時間";
+            this.runTime.Width = 80;
+            // 
+            // totalRunTime
+            // 
+            this.totalRunTime.Text = "合計実行時間";
+            this.totalRunTime.Width = 80;
+            // 
+            // processId
+            // 
+            this.processId.Text = "プロセスID";
+            // 
+            // executablePath
+            // 
+            this.executablePath.Text = "実行ファイルパス";
+            this.executablePath.Width = 180;
             // 
             // tabPage2
             // 
@@ -164,7 +166,7 @@
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 500;
+            this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
             // 
             // MainForm
@@ -198,13 +200,13 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ListView processListView;
         private System.Windows.Forms.Label processListLabel;
-        private System.Windows.Forms.ColumnHeader processName;
-        private System.Windows.Forms.ColumnHeader id;
-        private System.Windows.Forms.ColumnHeader processPath;
-        private System.Windows.Forms.ColumnHeader description;
+        private System.Windows.Forms.ColumnHeader windowName;
+        private System.Windows.Forms.ColumnHeader processId;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ColumnHeader runTime;
-        private System.Windows.Forms.ColumnHeader creationDate;
+        private System.Windows.Forms.ColumnHeader processStartDate;
+        private System.Windows.Forms.ColumnHeader totalRunTime;
+        private System.Windows.Forms.ColumnHeader executablePath;
     }
 }
 
