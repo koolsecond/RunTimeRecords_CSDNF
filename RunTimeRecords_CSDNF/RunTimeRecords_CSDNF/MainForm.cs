@@ -1,6 +1,8 @@
 ﻿using CsvHelper;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Management; //あらかじめ「System.Management」を参照に追加しておくこと
@@ -24,133 +26,108 @@ namespace RunTimeRecords_CSDNF
             // https://learn.microsoft.com/ja-jp/windows/win32/cimwin32prov/win32-process
             _managementClass = new ManagementClass("Win32_Process");
             // データテーブルの初期化
-            InitializeProcessDataTable();            
+            processDataTable = InitializeProcessDataTable();
             // プロセスデータテーブルの初期化
-            GetProcessList();
+            processDataTable = GetProcessList(processDataTable, _managementClass);
             // プロセスリストの初期化
             SetProcessList();
-
         }
 
-        private void InitializeProcessDataTable()
+        private static DataTable InitializeProcessDataTable()
         {
             // TODO : ★dataTable一式は１つのクラスにしたい（DTO？）
 
-            processDataTable = new DataTable();
-            DataColumn column;
-            // ExecutablePath 項目の設定(PK)
-            column = new DataColumn
-            {
-                ColumnName = "ExecutablePath",
-                DataType = typeof(string)
-            };
-            processDataTable.Columns.Add(column);
+            DataTable processDataTable = new DataTable();
+            // WindowTitle 項目の設定(PK)
+            DataColumn column = processDataTable.Columns.Add("WindowTitle", typeof(string));
             var keyList = new DataColumn[] { column };
             processDataTable.PrimaryKey = keyList;
-            // name 項目の設定
-            column = new DataColumn
-            {
-                ColumnName = "Name",
-                DataType = typeof(string)
-            };
-            processDataTable.Columns.Add(column);
-            // id 項目の設定
-            column = new DataColumn
-            {
-                ColumnName = "Id",
-                DataType = typeof(string)
-            };
-            processDataTable.Columns.Add(column);
-            // Description 項目の設定
-            column = new DataColumn
-            {
-                ColumnName = "Description",
-                DataType = typeof(string)
-            };
-            processDataTable.Columns.Add(column);
-            // CreationDate 項目の設定
-            column = new DataColumn
-            {
-                ColumnName = "CreationDate",
-                DataType = typeof(DateTime)
-            };
-            processDataTable.Columns.Add(column);
+            // ProcessStartTime 項目の設定
+            processDataTable.Columns.Add("ProcessStartTime", typeof(DateTime));
             // RunTime 項目の設定
-            column = new DataColumn
-            {
-                ColumnName = "RunTime",
-                DataType = typeof(TimeSpan)
-            };
-            processDataTable.Columns.Add(column);
+            processDataTable.Columns.Add("RunTime", typeof(TimeSpan));
+            // TotalRunTime 項目の設定
+            processDataTable.Columns.Add("TotalRunTime", typeof(TimeSpan));
+            // ProcessId 項目の設定
+            processDataTable.Columns.Add("ProcessId", typeof(int));
+            // ExecutablePath 項目の設定
+            processDataTable.Columns.Add("ExecutablePath", typeof(string));
+
+            return processDataTable;
         }
 
         /// <summary>
         /// 実行中のプロセスリストを取得
         /// </summary>
-        private void GetProcessList()
+        private static DataTable GetProcessList(DataTable processDataTable, ManagementClass managementClass)
         {
             // TODO : ★このクラスはDAOにすべき？
 
             var nowTime = DateTime.Now;
-            // プロセス一覧を取得して設定
-            ManagementObjectCollection list = _managementClass.GetInstances(); // このインスタンスは都度再生成が必要
-            foreach (ManagementBaseObject process in list)
+
+            // プロセス一覧を取得してid,実行パスの辞書を作成
+            Dictionary<int, string> processPathDictionary = new Dictionary<int, string>();
+            using( ManagementObjectCollection list = managementClass.GetInstances()) // このインスタンスは都度再生成が必要
             {
-                try
+                foreach (ManagementBaseObject process in list)
                 {
-                    // 実行パスをキーとする
-                    string executablePath = "";
-                    if (process["ExecutablePath"] != null)
+                    // 実行パスが無いものは不要
+                    if (process["ExecutablePath"] == null)
                     {
-                        executablePath = process["ExecutablePath"].ToString();
+                        continue;
                     }
+                    string executablePath = process["ExecutablePath"].ToString();
                     // TODO : ★とりま「ExecutablePath」が「D:」始まりでないものはスキップ
                     if (!executablePath.StartsWith("D:"))
                     {
                         continue;
                     }
-                    string key = executablePath;
-                    // データテーブルへ反映
+                    int processId = int.Parse(process["ProcessId"].ToString());
+                    // 辞書に追加
+                    processPathDictionary.Add(processId, executablePath);
+                }
+            }
+
+            // プロセス一覧を取得してデータテーブルを更新
+            foreach ( var process in Process.GetProcesses())
+            {
+                // ウィンドウタイトルが設定されているもののみが対象
+                string windowTitle = process.MainWindowTitle;
+                if (String.IsNullOrEmpty(windowTitle))
+                {
+                    continue;
+                }
+                // 実行パス一覧に存在するものが対象
+                int processId = process.Id;
+                if (!processPathDictionary.TryGetValue(processId, out string executablePath))
+                {
+                    continue; // スキップ
+                }
+                try
+                {
+                    string key = windowTitle;
+                    // StartTime
+                    DateTime startTime = process.StartTime;
+                    // RunTime
+                    TimeSpan runTime = nowTime - startTime;
+                    // 行の有無で分岐
                     DataRow existRow = processDataTable.Rows.Find(key);
-                    if( existRow != null )
+                    if (existRow != null)
                     {
                         // 既存データは実行時間のみ更新
-                        // CreationDate取得
-                        DateTime creationDate = (DateTime)existRow["CreationDate"];
-                        // RunTime
-                        TimeSpan runTime = nowTime - creationDate;
                         existRow["RunTime"] = runTime;
+                        existRow["TotalRunTime"] = runTime;// todo : 合計時間に変更すること
                     }
                     else
                     {
                         // 新規データ
-                        string name = process["Name"].ToString();
-                        string id = process["ProcessId"].ToString();
-                        // description
-                        string description = "";
-                        if (process["Description"] != null)
-                        {
-                            description = process["Description"].ToString();
-                        }
-                        // CreationDate
-                        string creationDateString = process["CreationDate"].ToString();
-                        int year = int.Parse(creationDateString.Substring(0, 4));
-                        int month = int.Parse(creationDateString.Substring(4, 2));
-                        int day = int.Parse(creationDateString.Substring(6, 2));
-                        int hour = int.Parse(creationDateString.Substring(8, 2));
-                        int minute = int.Parse(creationDateString.Substring(10, 2));
-                        int second = int.Parse(creationDateString.Substring(12, 2));
-                        var creationDate = new DateTime(year, month, day, hour, minute, second);
-                        // RunTime
-                        TimeSpan runTime = nowTime - creationDate;
-
                         DataRow newRow = processDataTable.NewRow();
-                        newRow["ExecutablePath"] = executablePath;
-                        newRow["Name"] = name;
-                        newRow["Id"] = id;
-                        newRow["Description"] = description;
-                        newRow["CreationDate"] = creationDate;
+                        newRow["WindowTitle"] = windowTitle;
+                        newRow["ProcessStartTime"] = startTime;
                         newRow["RunTime"] = runTime;
+                        newRow["TotalRunTime"] = runTime; // todo : 合計時間に変更すること
+                        newRow["ProcessId"] = processId;
+                        newRow["ExecutablePath"] = executablePath;
                         processDataTable.Rows.Add(newRow);
                     }
                 }
@@ -159,6 +136,7 @@ namespace RunTimeRecords_CSDNF
                     Console.WriteLine(ex);
                 }
             }
+            return processDataTable;
         }
 
         /// <summary>
@@ -171,12 +149,12 @@ namespace RunTimeRecords_CSDNF
             foreach (DataRow row in processDataTable.Rows)
             {
                 string[] item = {
-                    (string)row["Name"],
-                    (string)row["Id"],
-                    (string)row["ExecutablePath"],
-                    (string)row["Description"],
-                    ((DateTime)row["CreationDate"]).ToString(),
-                    TimeFormatString((TimeSpan)row["RunTime"])
+                    (string)row["WindowTitle"],
+                    ((DateTime)row["ProcessStartTime"]).ToString(),
+                    TimeFormatString((TimeSpan)row["RunTime"]),
+                    TimeFormatString((TimeSpan)row["TotalRunTime"]),// 合計実行時間
+                    ((int)row["ProcessId"]).ToString(),
+                    (string)row["ExecutablePath"]
                 };
                 processListView.Items.Add(new ListViewItem(item));
             }
@@ -195,13 +173,9 @@ namespace RunTimeRecords_CSDNF
         /// <param name="e"></param>
         void OnTimerTick(object sender, EventArgs e)
         {
-            GetProcessList(); // 事前に値を取得
+            processDataTable = GetProcessList(processDataTable, _managementClass); // 事前に値を取得
             SetProcessList(); // 取得した値で差し替え
-        }
-
-        private void SaveButton_Click(object sender, EventArgs e)
-        {
-            SaveProcesses(processDataTable);
+            SaveProcesses(processDataTable); // 自動保存
         }
 
         private static void SaveProcesses(DataTable processes)
@@ -247,10 +221,6 @@ namespace RunTimeRecords_CSDNF
                     // 項目毎に書き込み
                     foreach (DataColumn column in processes.Columns)
                     {
-                        if (column.ColumnName.Equals("Key"))
-                        {
-                            continue; // Key項目はスキップ
-                        }
                         csvWriter.WriteField(row[column]); 
                     }
                     csvWriter.NextRecord(); //改行
