@@ -39,7 +39,6 @@
             this.windowName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.processStartDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.runTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.totalRunTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.processId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.executablePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -111,7 +110,6 @@
             this.windowName,
             this.processStartDate,
             this.runTime,
-            this.totalRunTime,
             this.processId,
             this.executablePath});
             this.processListView.FullRowSelect = true;
@@ -138,11 +136,6 @@
             // 
             this.runTime.Text = "実行時間";
             this.runTime.Width = 80;
-            // 
-            // totalRunTime
-            // 
-            this.totalRunTime.Text = "合計実行時間";
-            this.totalRunTime.Width = 80;
             // 
             // processId
             // 
@@ -205,7 +198,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ColumnHeader runTime;
         private System.Windows.Forms.ColumnHeader processStartDate;
-        private System.Windows.Forms.ColumnHeader totalRunTime;
         private System.Windows.Forms.ColumnHeader executablePath;
     }
 }
