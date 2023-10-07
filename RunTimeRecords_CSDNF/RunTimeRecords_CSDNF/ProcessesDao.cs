@@ -41,7 +41,7 @@ namespace RunTimeRecords_CSDNF
         /// <summary>
         /// 実行中のプロセスリストを取得
         /// </summary>
-        public static DataTable GetProcessList(DataTable processDataTable)
+        public static DataTable GetProcessList(DataTable processDataTable , List<string> whiteList)
         {
             var nowTime = DateTime.Now;
 
@@ -51,14 +51,15 @@ namespace RunTimeRecords_CSDNF
             {
                 foreach (ManagementBaseObject process in list)
                 {
-                    // 実行パスが無いものは不要
+                    // 実行パスが無いものはスキップ
                     if (process["ExecutablePath"] == null)
                     {
                         continue;
                     }
                     string executablePath = process["ExecutablePath"].ToString();
-                    // TODO : ★とりま「ExecutablePath」が「D:」始まりでないものはスキップ
-                    if (!executablePath.StartsWith("D:"))
+                    // ホワイトリストに無ければスキップ
+                    //if (!whiteList.Contains(executablePath))
+                    if (!whiteList.Exists(x => executablePath.StartsWith(x)))
                     {
                         continue;
                     }
@@ -71,23 +72,22 @@ namespace RunTimeRecords_CSDNF
             // プロセス一覧を取得してデータテーブルを更新
             foreach (var process in Process.GetProcesses())
             {
-                // ウィンドウタイトルが設定されているもののみが対象
+                // ウィンドウタイトルが設定されていないものはスキップ
                 string windowTitle = process.MainWindowTitle;
                 if (String.IsNullOrEmpty(windowTitle))
                 {
                     continue;
                 }
-                // 実行パス一覧に存在するものが対象
+                // 実行パス一覧に存在しないものはスキップ
                 int processId = process.Id;
                 if (!processPathDictionary.TryGetValue(processId, out string executablePath))
                 {
-                    continue; // スキップ
+                    continue;
                 }
                 try
                 {
-                    // StartTime
+                    // 時間計算
                     DateTime startTime = process.StartTime;
-                    // RunTime
                     TimeSpan runTime = nowTime - startTime;
                     // データ検索
                     DataRow existRow = null;
@@ -127,47 +127,52 @@ namespace RunTimeRecords_CSDNF
 
         public static List<ProcessDto> LoadProcesses()
         {
-            // 前回保存ファイルがあれば読み込みを実施
-            if (File.Exists(SaveFilePath))
+            try
             {
-                return ReadCsv(); // いつかはデータベース化？
+                // 前回保存ファイルがあれば読み込みを実施
+                if (File.Exists(SaveFilePath))
+                {
+                    var records = new List<ProcessDto>();
+                    using (var streamReader = new StreamReader(SaveFilePath))
+                    using (var csvReader = new CsvReader(streamReader, CsvConfig))
+                    {
+                        records = csvReader.GetRecords<ProcessDto>().ToList();
+                    }
+                    return records;
+                }
+            }
+            catch( Exception ex) 
+            {
+                Console.WriteLine(ex);
             }
             return new List<ProcessDto>();
         }
 
-        private static List<ProcessDto> ReadCsv()
+        public static bool SaveProcesses(List<ProcessDto> processes)
         {
-            var records = new List<ProcessDto>();
-            using (var streamReader = new StreamReader(SaveFilePath))
-            using (var csvReader = new CsvReader(streamReader, CsvConfig))
+            try
             {
-                records = csvReader.GetRecords<ProcessDto>().ToList<ProcessDto>();
-            }
-            return records;
-        }
+                // 保存先フォルダが無ければ作成
+                Utilities.CreateDirectory(SaveFolderPath);
 
-        public static void SaveProcesses(List<ProcessDto> processes)
-        {
-            // プロセスデータをcsvに保存
-            WriteCsv(processes, SaveFilePath); // いつかはデータベース化？
-        }
-
-        private static void WriteCsv(List<ProcessDto> processes, string filePath)
-        {
-            // 保存先フォルダが無ければ作成
-            Utilities.CreateDirectory(SaveFolderPath);
-
-            // csv書き込み
-            using (var streamWriter = new StreamWriter(filePath))
-            using (var csvWriter = new CsvWriter(streamWriter, CsvConfig))
-            {
-                // 1行ずつ書き込み
-                foreach (ProcessDto processDto in processes)
+                // csv書き込み（1行ずつ）
+                using (var streamWriter = new StreamWriter(SaveFilePath))
+                using (var csvWriter = new CsvWriter(streamWriter, CsvConfig))
                 {
-                    csvWriter.WriteRecord(processDto);
-                    csvWriter.NextRecord(); //改行
+                    foreach (ProcessDto processDto in processes)
+                    {
+                        csvWriter.WriteRecord(processDto);
+                        csvWriter.NextRecord(); //改行
+                    }
                 }
+                return true;
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            return false;
         }
+
     }
 }
