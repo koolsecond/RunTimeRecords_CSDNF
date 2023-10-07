@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Windows.Forms;
 
 namespace RunTimeRecords_CSDNF
@@ -9,6 +10,7 @@ namespace RunTimeRecords_CSDNF
     {
         private DataTable processDataTable;
         List<ProcessDto> processList;
+        List<string> whiteList;
 
         public MainForm()
         {
@@ -17,6 +19,11 @@ namespace RunTimeRecords_CSDNF
             menuStrip.Visible = false;
             statusStrip.Visible = false;
             toolStripStatusLabel1.Text = string.Empty;
+            
+            // ホワイトリストの読込と設定
+            whiteList = WhiteListDao.LoadWhiteList();
+            SetWhiteListView();
+
             // データテーブルの初期化（前回保存内容の読込）
             processDataTable = InitializeProcessDataTable();
             processList = ProcessesDao.LoadProcesses();
@@ -33,9 +40,9 @@ namespace RunTimeRecords_CSDNF
                 processDataTable.Rows.Add(newRow);
             }
             // 実行中のプロセスのデータを追加
-            processDataTable = ProcessesDao.GetProcessList(processDataTable);
+            processDataTable = ProcessesDao.GetProcessList(processDataTable, whiteList);
             // プロセスリストの初期化
-            SetProcessList();
+            SetProcessListView();
         }
 
         private static DataTable InitializeProcessDataTable()
@@ -62,7 +69,7 @@ namespace RunTimeRecords_CSDNF
         /// <summary>
         /// リストビューに実行中のプロセスリストを設定
         /// </summary>
-        private void SetProcessList()
+        private void SetProcessListView()
         {
             // リストビューを再設定
             processListView.Items.Clear();
@@ -79,6 +86,15 @@ namespace RunTimeRecords_CSDNF
             }
         }
 
+        private void SetWhiteListView()
+        {
+            whiteListGridView.Rows.Clear();
+            foreach( string path in whiteList)
+            {
+                whiteListGridView.Rows.Add(path);
+            }
+        }
+
         /// <summary>
         /// タイマーイベントの関数の定義
         /// </summary>
@@ -86,7 +102,7 @@ namespace RunTimeRecords_CSDNF
         /// <param name="e"></param>
         void OnTimerTick(object sender, EventArgs e)
         {
-            processDataTable = ProcessesDao.GetProcessList(processDataTable); // 事前に値を取得
+            processDataTable = ProcessesDao.GetProcessList(processDataTable, whiteList); // 事前に値を取得
             List<ProcessDto> processList = new List<ProcessDto>();
             foreach (DataRow row in processDataTable.Rows)
             {
@@ -100,8 +116,52 @@ namespace RunTimeRecords_CSDNF
                 };
                 processList.Add(processDto);
             }
-            SetProcessList(); // 取得した値で差し替え
+            SetProcessListView(); // 取得した値で差し替え
             ProcessesDao.SaveProcesses(processList); // 自動保存
+        }
+
+        private void WhiteDirectoryButton_Click(object sender, EventArgs e)
+        {
+            string path = addWhiteDirectory.Text;
+            whiteList.Add(path);
+            WhiteListDao.SaveWhiteList(whiteList);
+            SetWhiteListView();
+        }
+
+        private void WhiteListGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // 削除ボタンが押下された場合
+            if (whiteListGridView.Columns[e.ColumnIndex].Name == "deleteButton")
+            {
+                // 選択行の解析
+                DataGridViewRow row = whiteListGridView.Rows[e.RowIndex];
+                DataGridViewCell cell = row.Cells[0];
+                string path = cell.Value.ToString();
+                // ダイアログの表示
+                string deleteCaption = "対象リスト削除確認";
+                string deleteMessage = $"フォルダ「{path}」を対象から削除して宜しいですか？";
+                DialogResult result = MessageBox.Show(deleteMessage, deleteCaption, MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    // リストの削除・保存・表示
+                    whiteList.Remove(path);
+                    WhiteListDao.SaveWhiteList(whiteList);
+                    SetWhiteListView();
+                }
+            }
+        }
+
+        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // 監視タブ以外ではタイマーを無効にする
+            if(tabControl1.SelectedTab.Name == "tabPage1")
+            {
+                timer1.Enabled = true;
+            }
+            else
+            {
+                timer1.Enabled = false;
+            }
         }
     }
 }

@@ -42,10 +42,20 @@
             this.processId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.executablePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.whiteListGridView = new System.Windows.Forms.DataGridView();
+            this.directoryPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.deleteButton = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.addWhiteDirectoryButton = new System.Windows.Forms.Button();
+            this.addWhiteDirectory = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.whiteListGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -76,12 +86,14 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(800, 404);
             this.tabControl1.TabIndex = 2;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.TabControl1_SelectedIndexChanged);
             // 
             // tabPage1
             // 
@@ -92,7 +104,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(792, 378);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "監視状態";
+            this.tabPage1.Text = "監視";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // processListLabel
@@ -156,6 +168,92 @@
             this.tabPage2.Text = "集計";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.whiteListGridView);
+            this.tabPage3.Controls.Add(this.addWhiteDirectoryButton);
+            this.tabPage3.Controls.Add(this.addWhiteDirectory);
+            this.tabPage3.Controls.Add(this.label2);
+            this.tabPage3.Controls.Add(this.label1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(792, 378);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "対象";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // whiteListGridView
+            // 
+            this.whiteListGridView.AllowUserToAddRows = false;
+            this.whiteListGridView.AllowUserToDeleteRows = false;
+            this.whiteListGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.whiteListGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
+            this.whiteListGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.whiteListGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.directoryPath,
+            this.deleteButton});
+            this.whiteListGridView.Location = new System.Drawing.Point(10, 62);
+            this.whiteListGridView.Name = "whiteListGridView";
+            this.whiteListGridView.RowTemplate.Height = 21;
+            this.whiteListGridView.Size = new System.Drawing.Size(283, 313);
+            this.whiteListGridView.TabIndex = 4;
+            this.whiteListGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.WhiteListGridView_CellContentClick);
+            // 
+            // directoryPath
+            // 
+            this.directoryPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.directoryPath.Frozen = true;
+            this.directoryPath.HeaderText = "フォルダパス";
+            this.directoryPath.Name = "directoryPath";
+            this.directoryPath.ReadOnly = true;
+            this.directoryPath.Width = 84;
+            // 
+            // deleteButton
+            // 
+            this.deleteButton.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.deleteButton.Frozen = true;
+            this.deleteButton.HeaderText = "削除";
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.deleteButton.Text = "削除";
+            this.deleteButton.UseColumnTextForButtonValue = true;
+            this.deleteButton.Width = 50;
+            // 
+            // addWhiteDirectoryButton
+            // 
+            this.addWhiteDirectoryButton.Location = new System.Drawing.Point(218, 23);
+            this.addWhiteDirectoryButton.Name = "addWhiteDirectoryButton";
+            this.addWhiteDirectoryButton.Size = new System.Drawing.Size(75, 23);
+            this.addWhiteDirectoryButton.TabIndex = 2;
+            this.addWhiteDirectoryButton.Text = "追加";
+            this.addWhiteDirectoryButton.UseVisualStyleBackColor = true;
+            this.addWhiteDirectoryButton.Click += new System.EventHandler(this.WhiteDirectoryButton_Click);
+            // 
+            // addWhiteDirectory
+            // 
+            this.addWhiteDirectory.Location = new System.Drawing.Point(10, 25);
+            this.addWhiteDirectory.Name = "addWhiteDirectory";
+            this.addWhiteDirectory.Size = new System.Drawing.Size(202, 19);
+            this.addWhiteDirectory.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(8, 10);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(89, 12);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "ホワイトリスト追加";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(8, 47);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(65, 12);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "ホワイトリスト";
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
@@ -178,6 +276,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.whiteListGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -199,6 +300,14 @@
         private System.Windows.Forms.ColumnHeader runTime;
         private System.Windows.Forms.ColumnHeader processStartDate;
         private System.Windows.Forms.ColumnHeader executablePath;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button addWhiteDirectoryButton;
+        private System.Windows.Forms.TextBox addWhiteDirectory;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.DataGridView whiteListGridView;
+        private System.Windows.Forms.DataGridViewTextBoxColumn directoryPath;
+        private System.Windows.Forms.DataGridViewButtonColumn deleteButton;
     }
 }
 
