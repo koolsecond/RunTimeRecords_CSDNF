@@ -41,7 +41,7 @@ namespace RunTimeRecords_CSDNF
         /// <summary>
         /// 実行中のプロセスリストを取得
         /// </summary>
-        public static DataTable GetProcessList(DataTable processDataTable , List<string> whiteList)
+        public static DataTable GetProcessList(DataTable processDataTable , List<string> whiteList, List<string> blackList)
         {
             var nowTime = DateTime.Now;
 
@@ -58,8 +58,12 @@ namespace RunTimeRecords_CSDNF
                     }
                     string executablePath = process["ExecutablePath"].ToString();
                     // ホワイトリストに無ければスキップ
-                    //if (!whiteList.Contains(executablePath))
                     if (!whiteList.Exists(x => executablePath.StartsWith(x)))
+                    {
+                        continue;
+                    }
+                    // ブラックリストにあればスキップ
+                    if (blackList.Exists(x => executablePath.StartsWith(x)))
                     {
                         continue;
                     }
