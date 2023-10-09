@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System;
 using System.Management;//あらかじめ「System.Management」を参照に追加しておくこと
@@ -41,7 +40,7 @@ namespace RunTimeRecords_CSDNF
         /// <summary>
         /// 実行中のプロセスリストを取得
         /// </summary>
-        public static DataTable GetProcessList(DataTable processDataTable , List<string> whiteList, List<string> blackList)
+        public static List<ProcessDto> GetProcessList(List<ProcessDto> processList , List<string> whiteList, List<string> blackList)
         {
             var nowTime = DateTime.Now;
 
@@ -94,10 +93,10 @@ namespace RunTimeRecords_CSDNF
                     DateTime startTime = process.StartTime;
                     TimeSpan runTime = nowTime - startTime;
                     // データ検索
-                    DataRow existRow = null;
-                    foreach (DataRow row in processDataTable.Rows)
+                    ProcessDto existRow = null;
+                    foreach (ProcessDto row in processList)
                     {
-                        if (row["WindowTitle"].Equals(windowTitle) && ((DateTime)row["ProcessStartTime"]).ToString().Equals(startTime.ToString()))
+                        if (row.WindowTitle == windowTitle && row.ProcessStartTime.ToString().Equals(startTime.ToString()))
                         {
                             existRow = row;
                             break;
@@ -107,18 +106,20 @@ namespace RunTimeRecords_CSDNF
                     if (existRow != null)
                     {
                         // 既存データは実行時間のみ更新
-                        existRow["RunTime"] = runTime;
+                        existRow.RunTime = runTime;
                     }
                     else
                     {
                         // 新規データ
-                        DataRow newRow = processDataTable.NewRow();
-                        newRow["WindowTitle"] = windowTitle;
-                        newRow["ProcessStartTime"] = startTime;
-                        newRow["RunTime"] = runTime;
-                        newRow["ProcessId"] = processId;
-                        newRow["ExecutablePath"] = executablePath;
-                        processDataTable.Rows.Add(newRow);
+                        ProcessDto newProcess = new ProcessDto
+                        {
+                            WindowTitle = windowTitle,
+                            ProcessStartTime = startTime,
+                            RunTime = runTime,
+                            ProcessId = processId,
+                            ExecutablePath = executablePath
+                        };
+                        processList.Add(newProcess);
                     }
                 }
                 catch (Exception ex)
@@ -126,7 +127,7 @@ namespace RunTimeRecords_CSDNF
                     Console.WriteLine(ex);
                 }
             }
-            return processDataTable;
+            return processList;
         }
 
         public static List<ProcessDto> LoadProcesses()

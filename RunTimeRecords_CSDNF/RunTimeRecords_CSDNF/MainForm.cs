@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using System.Windows.Forms;
 
 namespace RunTimeRecords_CSDNF
 {
     public partial class MainForm : Form
     {
-        private DataTable processDataTable;
         private readonly List<ProcessDto> processList;
         private readonly List<string> whiteList;
         private readonly List<string> blackList;
@@ -31,63 +28,30 @@ namespace RunTimeRecords_CSDNF
             blackList = BlackListDao.LoadList();
             SetBlackListView();
 
-            // データテーブルの初期化（前回保存内容の読込）
-            processDataTable = InitializeProcessDataTable();
+            // プロセスリストの初期化（前回保存内容の読込）
             processList = ProcessesDao.LoadProcesses();
-            foreach (var record in processList)
-            {
-                // todo:　List<ProcessDto> -> DataTableの型変換は無くしたい
-                // 新規データ
-                DataRow newRow = processDataTable.NewRow();
-                newRow["WindowTitle"] = Utilities.DoubleQuateDelete(record.WindowTitle);
-                newRow["ProcessStartTime"] = record.ProcessStartTime;
-                newRow["RunTime"] = record.RunTime;
-                newRow["ProcessId"] = record.ProcessId;
-                newRow["ExecutablePath"] = Utilities.DoubleQuateDelete(record.ExecutablePath);
-                processDataTable.Rows.Add(newRow);
-            }
             // 実行中のプロセスのデータを追加
-            processDataTable = ProcessesDao.GetProcessList(processDataTable, whiteList, blackList);
+            ProcessesDao.GetProcessList(processList, whiteList, blackList);
             // プロセスリストの初期化
             SetProcessListView();
         }
 
-        private static DataTable InitializeProcessDataTable()
-        {
-            // TODO : ★dataTable一式は１つのクラスにしたい（DTO？）->もういらない？
-
-            DataTable processDataTable = new DataTable();
-            // WindowTitle 項目の設定(PK)
-            DataColumn keyColumn1 = processDataTable.Columns.Add("WindowTitle", typeof(string));
-            // ProcessStartTime 項目の設定
-            DataColumn keyColumn2 = processDataTable.Columns.Add("ProcessStartTime", typeof(DateTime));
-            // RunTime 項目の設定
-            processDataTable.Columns.Add("RunTime", typeof(TimeSpan));
-            // ProcessId 項目の設定
-            processDataTable.Columns.Add("ProcessId", typeof(int));
-            // ExecutablePath 項目の設定
-            processDataTable.Columns.Add("ExecutablePath", typeof(string));
-            // データテーブルのキー項目の設定
-            var keyList = new DataColumn[] { keyColumn1 , keyColumn2 };
-            processDataTable.PrimaryKey = keyList;
-            return processDataTable;
-        }
-
         /// <summary>
-        /// リストビューに実行中のプロセスリストを設定
+        /// プロセスリストに実行中のプロセスリストを設定
         /// </summary>
         private void SetProcessListView()
         {
             // リストビューを再設定
             processListView.Items.Clear();
-            foreach (DataRow row in processDataTable.Rows)
+            foreach (ProcessDto process in processList)
             {
-                string[] item = {
-                    (string)row["WindowTitle"],
-                    ((DateTime)row["ProcessStartTime"]).ToString(),
-                    Utilities.TimeFormatString((TimeSpan)row["RunTime"]),
-                    ((int)row["ProcessId"]).ToString(),
-                    (string)row["ExecutablePath"]
+                string[] item =
+                {
+                    process.WindowTitle,
+                    process.ProcessStartTime.ToString(),
+                    Utilities.TimeFormatString(process.RunTime),
+                    process.ProcessId.ToString(),
+                    process.ExecutablePath,
                 };
                 processListView.Items.Add(new ListViewItem(item));
             }
@@ -124,22 +88,12 @@ namespace RunTimeRecords_CSDNF
         /// <param name="e"></param>
         void OnTimerTick(object sender, EventArgs e)
         {
-            processDataTable = ProcessesDao.GetProcessList(processDataTable, whiteList, blackList); // 事前に値を取得
-            List<ProcessDto> processList = new List<ProcessDto>();
-            foreach (DataRow row in processDataTable.Rows)
-            {
-                var processDto = new ProcessDto
-                {
-                    WindowTitle = (string)row["WindowTitle"],
-                    ProcessStartTime = (DateTime)row["ProcessStartTime"],
-                    RunTime = (TimeSpan)row["RunTime"],
-                    ProcessId = ((int)row["ProcessId"]),
-                    ExecutablePath = (string)row["ExecutablePath"]
-                };
-                processList.Add(processDto);
-            }
-            SetProcessListView(); // 取得した値で差し替え
-            ProcessesDao.SaveProcesses(processList); // 自動保存
+            // 実行中プロセスを取得
+            ProcessesDao.GetProcessList(processList, whiteList, blackList);
+            // 取得した値で差し替え
+            SetProcessListView();
+            // 自動保存
+            ProcessesDao.SaveProcesses(processList);
         }
 
         /// <summary>
