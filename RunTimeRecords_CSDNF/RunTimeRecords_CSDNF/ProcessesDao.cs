@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System;
-using System.Management;//あらかじめ「System.Management」を参照に追加しておくこと
-using CsvHelper;
-using System.IO;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
-using System.Text;
+using System.IO;
 using System.Linq;
+using System.Management;//あらかじめ「System.Management」を参照に追加しておくこと
+using System.Text;
 
 namespace RunTimeRecords_CSDNF
 {
@@ -32,15 +32,15 @@ namespace RunTimeRecords_CSDNF
         // https://learn.microsoft.com/ja-jp/windows/win32/cimwin32prov/win32-process
         private static readonly ManagementClass _managementClass = new ManagementClass("Win32_Process");
 
-        public ProcessesDao() 
+        public ProcessesDao()
         {
-            
+
         }
 
         /// <summary>
         /// 実行中のプロセスリストを取得
         /// </summary>
-        public static List<ProcessDto> GetProcessList(List<ProcessDto> processList , List<string> whiteList, List<string> blackList)
+        public static List<ProcessDto> GetProcessList(List<ProcessDto> processList, List<string> whiteList, List<string> blackList)
         {
             var nowTime = DateTime.Now;
 
@@ -146,7 +146,7 @@ namespace RunTimeRecords_CSDNF
                     return records;
                 }
             }
-            catch( Exception ex) 
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
@@ -172,7 +172,7 @@ namespace RunTimeRecords_CSDNF
                 }
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }

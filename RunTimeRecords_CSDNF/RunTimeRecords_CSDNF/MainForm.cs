@@ -6,9 +6,18 @@ namespace RunTimeRecords_CSDNF
 {
     public partial class MainForm : Form
     {
+
+        private static readonly string SaveFolderPath = @".\master";
+        private static readonly string WhiteListFile = @"whiteList.txt";
+        private static readonly string WhiteFilePath = SaveFolderPath + @"\" + WhiteListFile;
+        private static readonly string BlackListFile = @"blackList.txt";
+        private static readonly string BlackFilePath = SaveFolderPath + @"\" + BlackListFile;
+        //private static readonly Encoding SaveFileEncoding = Encoding.GetEncoding("shift_jis");
+
         private readonly List<ProcessDto> processList;
-        private readonly List<string> whiteList;
-        private readonly List<string> blackList;
+        private readonly ListFileDto whiteList;
+        private readonly ListFileDto blackList;
+        private readonly ListFileDao listFileDao = new ListFileDao();
 
         public MainForm()
         {
@@ -17,21 +26,19 @@ namespace RunTimeRecords_CSDNF
             menuStrip.Visible = false;
             statusStrip.Visible = false;
             toolStripStatusLabel1.Text = string.Empty;
-            
-            // TODO : ホワイトリストとブラックリストは MasterListを親として新規作成すれば共通化できそう
 
             // ホワイトリストの読込と設定
-            whiteList = WhiteListDao.LoadWhiteList();
+            whiteList = listFileDao.LoadListFile(WhiteFilePath);
             SetWhiteListView();
 
             // ブラックリストの読込と設定
-            blackList = BlackListDao.LoadList();
+            blackList = listFileDao.LoadListFile(BlackFilePath);
             SetBlackListView();
 
             // プロセスリストの初期化（前回保存内容の読込）
             processList = ProcessesDao.LoadProcesses();
             // 実行中のプロセスのデータを追加
-            ProcessesDao.GetProcessList(processList, whiteList, blackList);
+            ProcessesDao.GetProcessList(processList, whiteList.DataList, blackList.DataList);
             // プロセスリストの初期化
             SetProcessListView();
         }
@@ -63,7 +70,7 @@ namespace RunTimeRecords_CSDNF
         private void SetWhiteListView()
         {
             whiteListGridView.Rows.Clear();
-            foreach( string path in whiteList)
+            foreach (string path in whiteList.DataList)
             {
                 whiteListGridView.Rows.Add(path);
             }
@@ -75,7 +82,7 @@ namespace RunTimeRecords_CSDNF
         private void SetBlackListView()
         {
             blackListGridView.Rows.Clear();
-            foreach( string path in blackList)
+            foreach (string path in blackList.DataList)
             {
                 blackListGridView.Rows.Add(path);
             }
@@ -89,7 +96,7 @@ namespace RunTimeRecords_CSDNF
         void OnTimerTick(object sender, EventArgs e)
         {
             // 実行中プロセスを取得
-            ProcessesDao.GetProcessList(processList, whiteList, blackList);
+            ProcessesDao.GetProcessList(processList, whiteList.DataList, blackList.DataList);
             // 取得した値で差し替え
             SetProcessListView();
             // 自動保存
@@ -104,8 +111,7 @@ namespace RunTimeRecords_CSDNF
         private void AddWhiteDirectoryButton_Click(object sender, EventArgs e)
         {
             string path = addWhiteDirectory.Text;
-            whiteList.Add(path);
-            WhiteListDao.SaveWhiteList(whiteList); // TODO: ADDとセットで記載がよくない。 Dto化？
+            whiteList.Add(path, listFileDao);
             SetWhiteListView();
         }
 
@@ -131,8 +137,7 @@ namespace RunTimeRecords_CSDNF
                 if (result == DialogResult.Yes)
                 {
                     // リストの削除・保存・表示
-                    whiteList.Remove(path);
-                    WhiteListDao.SaveWhiteList(whiteList); // TODO: Removeとセットで記載がよくない。 Dto化？
+                    whiteList.Remove(path, listFileDao);
                     SetWhiteListView();
                 }
             }
@@ -147,7 +152,7 @@ namespace RunTimeRecords_CSDNF
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // 監視タブ以外ではタイマーを無効にする
-            if(tabControl1.SelectedTab.Name == "tabPage1")
+            if (tabControl1.SelectedTab.Name == "tabPage1")
             {
                 timer1.Enabled = true;
             }
@@ -165,11 +170,16 @@ namespace RunTimeRecords_CSDNF
         private void AddBlackDirectoryButton_Click(object sender, EventArgs e)
         {
             string path = addBlackDirectory.Text;
-            blackList.Add(path);
-            BlackListDao.SaveList(blackList); // TODO: ADDとセットで記載がよくない。 Dto化？
+            blackList.Add(path, listFileDao);
             SetBlackListView();
         }
 
+        /// <summary>
+        /// ブラックリスト内のイベント
+        /// ・削除ボタンが押下された場合、該当データを削除する。
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BlackListGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             // 削除ボタンが押下された場合
@@ -186,8 +196,7 @@ namespace RunTimeRecords_CSDNF
                 if (result == DialogResult.Yes)
                 {
                     // リストの削除・保存・表示
-                    blackList.Remove(path);
-                    BlackListDao.SaveList(blackList); // TODO: Removeとセットで記載がよくない。 Dto化？
+                    blackList.Remove(path, listFileDao);
                     SetBlackListView();
                 }
             }
