@@ -20,7 +20,7 @@ namespace RunTimeRecords_CSDNF
             // 初期所有権が付与されていなければ起動済みと判断して終了
             if (!createdNew)
             {
-                MessageBox.Show("既に起動しています。","多重起動禁止");
+                MessageBox.Show("既に起動しています。", "多重起動禁止");
                 mutexObject.Close();
                 return;
             }
@@ -37,7 +37,7 @@ namespace RunTimeRecords_CSDNF
                 mutexObject.ReleaseMutex();
                 mutexObject.Close();
             }
-            
+
         }
     }
 }
