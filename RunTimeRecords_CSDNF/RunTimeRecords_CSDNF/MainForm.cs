@@ -112,6 +112,7 @@ namespace RunTimeRecords_CSDNF
         {
             string path = addWhiteDirectory.Text;
             whiteList.Add(path, listFileDao);
+            // TODO : リストの追加・保存の失敗時の動作
             SetWhiteListView();
         }
 
@@ -138,6 +139,7 @@ namespace RunTimeRecords_CSDNF
                 {
                     // リストの削除・保存・表示
                     whiteList.Remove(path, listFileDao);
+                    // TODO : リストの削除・保存の失敗時の動作
                     SetWhiteListView();
                 }
             }
@@ -171,6 +173,7 @@ namespace RunTimeRecords_CSDNF
         {
             string path = addBlackDirectory.Text;
             blackList.Add(path, listFileDao);
+            // TODO : リストの追加・保存の失敗時の動作
             SetBlackListView();
         }
 
@@ -197,6 +200,7 @@ namespace RunTimeRecords_CSDNF
                 {
                     // リストの削除・保存・表示
                     blackList.Remove(path, listFileDao);
+                    // TODO : リストの削除・保存の失敗時の動作
                     SetBlackListView();
                 }
             }
