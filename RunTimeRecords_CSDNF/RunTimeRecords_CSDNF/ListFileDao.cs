@@ -6,6 +6,8 @@ namespace RunTimeRecords_CSDNF
 {
     internal class ListFileDao
     {
+        readonly LoggerManager loggerManager = new LoggerManager();
+
         /// <summary>
         /// ファイルからテキストを読み込む、Dto生成
         /// </summary>
@@ -25,6 +27,7 @@ namespace RunTimeRecords_CSDNF
                 catch (IOException ex)
                 {
                     Console.WriteLine(ex);
+                    loggerManager.LogError($"リストファイル読み込みエラー,{filePath}", ex);
                 }
             }
             // Dto生成
@@ -59,6 +62,7 @@ namespace RunTimeRecords_CSDNF
             catch (IOException ex)
             {
                 Console.WriteLine(ex);
+                loggerManager.LogError($"リストファイル書き込みエラー,{fileDto.FilePath}", ex);
                 return false;
             }
         }

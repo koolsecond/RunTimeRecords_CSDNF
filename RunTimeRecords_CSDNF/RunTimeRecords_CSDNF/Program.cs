@@ -24,9 +24,12 @@ namespace RunTimeRecords_CSDNF
                 mutexObject.Close();
                 return;
             }
+            // ログの準備
+            LoggerManager loggerManager = new LoggerManager();
             // アプリケーションの本体を起動
             try
             {
+                loggerManager.LogInfo("アプリケーション開始");
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new MainForm());
@@ -36,6 +39,7 @@ namespace RunTimeRecords_CSDNF
                 // Mutexを解放する。
                 mutexObject.ReleaseMutex();
                 mutexObject.Close();
+                loggerManager.LogInfo("アプリケーション終了");
             }
 
         }

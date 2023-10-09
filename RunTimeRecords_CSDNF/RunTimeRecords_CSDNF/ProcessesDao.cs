@@ -13,6 +13,7 @@ namespace RunTimeRecords_CSDNF
 {
     public class ProcessesDao
     {
+        private static readonly LoggerManager loggerManager = new LoggerManager();
         private static readonly string SaveFolderPath = @".\save";
         private static readonly string SaveFileName = @"processes.csv";
         private static readonly string SaveFilePath = SaveFolderPath + @"\" + SaveFileName;
@@ -50,29 +51,37 @@ namespace RunTimeRecords_CSDNF
             {
                 foreach (ManagementBaseObject process in list)
                 {
-                    // 実行パスが無いものはスキップ
-                    if (process["ExecutablePath"] == null)
+                    try
                     {
-                        continue;
+                        // 実行パスが無いものはスキップ
+                        if (process["ExecutablePath"] == null)
+                        {
+                            continue;
+                        }
+                        string executablePath = process["ExecutablePath"].ToString();
+                        // ホワイトリストに無ければスキップ
+                        if (!whiteList.Exists(x => executablePath.StartsWith(x)))
+                        {
+                            continue;
+                        }
+                        // ブラックリストにあればスキップ
+                        if (blackList.Exists(x => executablePath.StartsWith(x)))
+                        {
+                            continue;
+                        }
+                        int processId = int.Parse(process["ProcessId"].ToString());
+                        // 辞書に追加
+                        processPathDictionary.Add(processId, executablePath);
                     }
-                    string executablePath = process["ExecutablePath"].ToString();
-                    // ホワイトリストに無ければスキップ
-                    if (!whiteList.Exists(x => executablePath.StartsWith(x)))
+                    catch (Exception ex)
                     {
-                        continue;
+                        Console.WriteLine(ex);
+                        loggerManager.LogError("id,実行パスの辞書作成エラー", ex);
                     }
-                    // ブラックリストにあればスキップ
-                    if (blackList.Exists(x => executablePath.StartsWith(x)))
-                    {
-                        continue;
-                    }
-                    int processId = int.Parse(process["ProcessId"].ToString());
-                    // 辞書に追加
-                    processPathDictionary.Add(processId, executablePath);
                 }
             }
 
-            // プロセス一覧を取得してデータテーブルを更新
+            // プロセス一覧を取得して監視リストを更新
             foreach (var process in Process.GetProcesses())
             {
                 // ウィンドウタイトルが設定されていないものはスキップ
@@ -125,6 +134,7 @@ namespace RunTimeRecords_CSDNF
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
+                    loggerManager.LogError("監視リスト更新エラー", ex);
                 }
             }
             return processList;
@@ -149,6 +159,7 @@ namespace RunTimeRecords_CSDNF
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                loggerManager.LogError($"プロセスファイル読み込みエラー,{SaveFilePath}", ex);
             }
             return new List<ProcessDto>();
         }
@@ -175,8 +186,9 @@ namespace RunTimeRecords_CSDNF
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                loggerManager.LogError($"プロセスファイル書き込みエラー,{SaveFilePath}", ex);
+                return false;
             }
-            return false;
         }
 
     }
