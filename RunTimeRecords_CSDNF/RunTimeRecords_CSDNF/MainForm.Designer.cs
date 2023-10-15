@@ -34,13 +34,22 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.processListLabel = new System.Windows.Forms.Label();
+            this.historyPanel = new System.Windows.Forms.Panel();
+            this.HistoryListView = new System.Windows.Forms.ListView();
+            this.historyWindowName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.historyProcessStartDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.historyRunTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.HistoryProcessId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.HistoryExecutablePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.historyLabel = new System.Windows.Forms.Label();
+            this.processPanel = new System.Windows.Forms.Panel();
             this.processListView = new System.Windows.Forms.ListView();
             this.windowName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.processStartDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.runTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.processId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.executablePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.processListLabel = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.whiteListPanel = new System.Windows.Forms.Panel();
@@ -63,6 +72,8 @@
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.historyPanel.SuspendLayout();
+            this.processPanel.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.whiteListPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.whiteListGridView)).BeginInit();
@@ -109,8 +120,8 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.processListLabel);
-            this.tabPage1.Controls.Add(this.processListView);
+            this.tabPage1.Controls.Add(this.historyPanel);
+            this.tabPage1.Controls.Add(this.processPanel);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -119,29 +130,98 @@
             this.tabPage1.Text = "監視";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // processListLabel
+            // historyPanel
             // 
-            this.processListLabel.AutoSize = true;
-            this.processListLabel.Location = new System.Drawing.Point(8, 31);
-            this.processListLabel.Name = "processListLabel";
-            this.processListLabel.Size = new System.Drawing.Size(66, 12);
-            this.processListLabel.TabIndex = 1;
-            this.processListLabel.Text = "プロセス一覧";
+            this.historyPanel.BackColor = System.Drawing.Color.Lime;
+            this.historyPanel.Controls.Add(this.HistoryListView);
+            this.historyPanel.Controls.Add(this.historyLabel);
+            this.historyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.historyPanel.Location = new System.Drawing.Point(3, 118);
+            this.historyPanel.Name = "historyPanel";
+            this.historyPanel.Size = new System.Drawing.Size(786, 257);
+            this.historyPanel.TabIndex = 3;
+            // 
+            // HistoryListView
+            // 
+            this.HistoryListView.BackColor = System.Drawing.Color.PaleGreen;
+            this.HistoryListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.historyWindowName,
+            this.historyProcessStartDate,
+            this.historyRunTime,
+            this.HistoryProcessId,
+            this.HistoryExecutablePath});
+            this.HistoryListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.HistoryListView.FullRowSelect = true;
+            this.HistoryListView.GridLines = true;
+            this.HistoryListView.HideSelection = false;
+            this.HistoryListView.Location = new System.Drawing.Point(0, 12);
+            this.HistoryListView.Name = "HistoryListView";
+            this.HistoryListView.Size = new System.Drawing.Size(786, 245);
+            this.HistoryListView.TabIndex = 1;
+            this.HistoryListView.UseCompatibleStateImageBehavior = false;
+            this.HistoryListView.View = System.Windows.Forms.View.Details;
+            // 
+            // historyWindowName
+            // 
+            this.historyWindowName.Text = "ウィンドウ名";
+            this.historyWindowName.Width = 200;
+            // 
+            // historyProcessStartDate
+            // 
+            this.historyProcessStartDate.Text = "プロセス開始時刻";
+            this.historyProcessStartDate.Width = 150;
+            // 
+            // historyRunTime
+            // 
+            this.historyRunTime.Text = "実行時間";
+            this.historyRunTime.Width = 80;
+            // 
+            // HistoryProcessId
+            // 
+            this.HistoryProcessId.Text = "プロセスID";
+            // 
+            // HistoryExecutablePath
+            // 
+            this.HistoryExecutablePath.Text = "実行ファイルパス";
+            this.HistoryExecutablePath.Width = 180;
+            // 
+            // historyLabel
+            // 
+            this.historyLabel.AutoSize = true;
+            this.historyLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.historyLabel.Location = new System.Drawing.Point(0, 0);
+            this.historyLabel.Name = "historyLabel";
+            this.historyLabel.Size = new System.Drawing.Size(53, 12);
+            this.historyLabel.TabIndex = 0;
+            this.historyLabel.Text = "履歴一覧";
+            // 
+            // processPanel
+            // 
+            this.processPanel.BackColor = System.Drawing.Color.SkyBlue;
+            this.processPanel.Controls.Add(this.processListView);
+            this.processPanel.Controls.Add(this.processListLabel);
+            this.processPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.processPanel.Location = new System.Drawing.Point(3, 3);
+            this.processPanel.Name = "processPanel";
+            this.processPanel.Size = new System.Drawing.Size(786, 115);
+            this.processPanel.TabIndex = 2;
             // 
             // processListView
             // 
+            this.processListView.BackColor = System.Drawing.Color.LightSkyBlue;
             this.processListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.windowName,
             this.processStartDate,
             this.runTime,
             this.processId,
             this.executablePath});
+            this.processListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.processListView.FullRowSelect = true;
             this.processListView.GridLines = true;
             this.processListView.HideSelection = false;
-            this.processListView.Location = new System.Drawing.Point(6, 46);
+            this.processListView.Location = new System.Drawing.Point(0, 12);
             this.processListView.Name = "processListView";
-            this.processListView.Size = new System.Drawing.Size(764, 259);
+            this.processListView.Size = new System.Drawing.Size(786, 103);
             this.processListView.TabIndex = 0;
             this.processListView.UseCompatibleStateImageBehavior = false;
             this.processListView.View = System.Windows.Forms.View.Details;
@@ -169,6 +249,16 @@
             // 
             this.executablePath.Text = "実行ファイルパス";
             this.executablePath.Width = 180;
+            // 
+            // processListLabel
+            // 
+            this.processListLabel.AutoSize = true;
+            this.processListLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.processListLabel.Location = new System.Drawing.Point(0, 0);
+            this.processListLabel.Name = "processListLabel";
+            this.processListLabel.Size = new System.Drawing.Size(66, 12);
+            this.processListLabel.TabIndex = 1;
+            this.processListLabel.Text = "プロセス一覧";
             // 
             // tabPage2
             // 
@@ -382,7 +472,10 @@
             this.statusStrip.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.historyPanel.ResumeLayout(false);
+            this.historyPanel.PerformLayout();
+            this.processPanel.ResumeLayout(false);
+            this.processPanel.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.whiteListPanel.ResumeLayout(false);
             this.whiteListPanel.PerformLayout();
@@ -428,6 +521,15 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button addBlackDirectoryButton;
         private System.Windows.Forms.TextBox addBlackDirectory;
+        private System.Windows.Forms.Panel historyPanel;
+        private System.Windows.Forms.Label historyLabel;
+        private System.Windows.Forms.Panel processPanel;
+        private System.Windows.Forms.ListView HistoryListView;
+        private System.Windows.Forms.ColumnHeader historyWindowName;
+        private System.Windows.Forms.ColumnHeader historyProcessStartDate;
+        private System.Windows.Forms.ColumnHeader historyRunTime;
+        private System.Windows.Forms.ColumnHeader HistoryProcessId;
+        private System.Windows.Forms.ColumnHeader HistoryExecutablePath;
     }
 }
 
