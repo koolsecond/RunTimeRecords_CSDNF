@@ -14,9 +14,6 @@ namespace RunTimeRecords_CSDNF
     public class ProcessesDao
     {
         private static readonly LoggerManager loggerManager = new LoggerManager();
-        private static readonly string SaveFolderPath = @".\save";
-        private static readonly string SaveFileName = @"processes.csv";
-        private static readonly string SaveFilePath = SaveFolderPath + @"\" + SaveFileName;
         private static readonly CsvConfiguration CsvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
             HasHeaderRecord = false, // ヘッダー有無
@@ -139,16 +136,20 @@ namespace RunTimeRecords_CSDNF
             }
             return processList;
         }
-
-        public static List<ProcessDto> LoadProcesses()
+        /// <summary>
+        /// プロセスリスト（CSV）ファイルの読込
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public List<ProcessDto> LoadProcesses(string filePath)
         {
             try
             {
                 // 前回保存ファイルがあれば読み込みを実施
-                if (File.Exists(SaveFilePath))
+                if (File.Exists(filePath))
                 {
                     var records = new List<ProcessDto>();
-                    using (var streamReader = new StreamReader(SaveFilePath))
+                    using (var streamReader = new StreamReader(filePath))
                     using (var csvReader = new CsvReader(streamReader, CsvConfig))
                     {
                         records = csvReader.GetRecords<ProcessDto>().ToList();
@@ -159,20 +160,30 @@ namespace RunTimeRecords_CSDNF
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                loggerManager.LogError($"プロセスファイル読み込みエラー,{SaveFilePath}", ex);
+                loggerManager.LogError($"プロセスファイル読み込みエラー,{filePath}", ex);
             }
             return new List<ProcessDto>();
         }
-
-        public static bool SaveProcesses(List<ProcessDto> processes)
+        /// <summary>
+        /// プロセスリスト（CSV）ファイルの書き込み
+        /// </summary>
+        /// <param name="processes"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public bool SaveProcesses(List<ProcessDto> processes, string filePath)
         {
             try
             {
-                // 保存先フォルダが無ければ作成
-                Utilities.CreateDirectory(SaveFolderPath);
+                // パスにフォルダ名があれば有無チェックと作成を実施
+                string directoryName = Path.GetDirectoryName(filePath);
+                if (directoryName != null)
+                {
+                    // 保存先フォルダが無ければ作成
+                    Utilities.CreateDirectory(directoryName);
+                }
 
                 // csv書き込み（1行ずつ）
-                using (var streamWriter = new StreamWriter(SaveFilePath))
+                using (var streamWriter = new StreamWriter(filePath))
                 using (var csvWriter = new CsvWriter(streamWriter, CsvConfig))
                 {
                     foreach (ProcessDto processDto in processes)
@@ -186,7 +197,42 @@ namespace RunTimeRecords_CSDNF
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                loggerManager.LogError($"プロセスファイル書き込みエラー,{SaveFilePath}", ex);
+                loggerManager.LogError($"プロセスファイル書き込みエラー,{filePath}", ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// プロセスリストから過去分の内容を履歴リストへ移動する。
+        /// </summary>
+        /// <param name="processes">プロセスリスト</param>
+        /// <param name="history">履歴リスト</param>
+        /// <returns>エラーが発生した場合はfalse</returns>
+        internal static bool MoveProcessDataToHistory(List<ProcessDto> processes, List<ProcessDto> history)
+        {
+            try
+            {
+                DateTime today = DateTime.Now;
+                // 元リストから過去分を取得
+                foreach (ProcessDto processDto in processes.FindAll(x => x.ProcessStartTime < today))
+                {
+                    // 履歴データに存在しないことを確認
+                    //ProcessDto historyProcess = history.Find(x => x.WindowTitle == processDto.WindowTitle && x.ProcessStartTime == processDto.ProcessStartTime);
+                    ProcessDto historyProcess = history.Find(x => x.Equals(processDto));
+                    if (historyProcess == null)
+                    {
+                        // 履歴データに追加
+                        history.Add(processDto);
+                    }
+                }
+                // 元リストから過去分を削除
+                processes.RemoveAll(x => x.ProcessStartTime.Date < today.Date);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                loggerManager.LogError($"プロセスリストから過去分の内容を履歴リストへ移動時にエラー発生", ex);
                 return false;
             }
         }
