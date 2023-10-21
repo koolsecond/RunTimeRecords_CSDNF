@@ -214,7 +214,7 @@ namespace RunTimeRecords_CSDNF
             {
                 DateTime today = DateTime.Now;
                 // 元リストから過去分を取得
-                foreach (ProcessDto processDto in processes.FindAll(x => x.ProcessStartTime < today))
+                foreach (ProcessDto processDto in processes.FindAll(x => x.ProcessStartTime < today.Date))
                 {
                     // 履歴データに存在しないことを確認
                     //ProcessDto historyProcess = history.Find(x => x.WindowTitle == processDto.WindowTitle && x.ProcessStartTime == processDto.ProcessStartTime);
