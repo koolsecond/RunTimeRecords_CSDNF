@@ -69,16 +69,26 @@
             this.addBlackDirectory = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.summaryListView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.historyPanel.SuspendLayout();
             this.processPanel.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.whiteListPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.whiteListGridView)).BeginInit();
             this.blackListPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.blackListGridView)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -262,6 +272,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.panel2);
+            this.tabPage2.Controls.Add(this.panel1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -457,6 +469,68 @@
             this.timer1.Interval = 60000;
             this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Aquamarine;
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(786, 46);
+            this.panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.summaryListView);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 49);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(786, 326);
+            this.panel2.TabIndex = 1;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label5.Location = new System.Drawing.Point(3, 13);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(123, 19);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "実行時間集計";
+            // 
+            // summaryListView
+            // 
+            this.summaryListView.BackColor = System.Drawing.Color.LightSeaGreen;
+            this.summaryListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader3,
+            this.columnHeader2});
+            this.summaryListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.summaryListView.FullRowSelect = true;
+            this.summaryListView.GridLines = true;
+            this.summaryListView.HideSelection = false;
+            this.summaryListView.Location = new System.Drawing.Point(0, 0);
+            this.summaryListView.Name = "summaryListView";
+            this.summaryListView.Size = new System.Drawing.Size(786, 326);
+            this.summaryListView.TabIndex = 1;
+            this.summaryListView.UseCompatibleStateImageBehavior = false;
+            this.summaryListView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "ウィンドウ名";
+            this.columnHeader1.Width = 200;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "実行時間";
+            this.columnHeader3.Width = 100;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "最終監視日";
+            this.columnHeader2.Width = 100;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -476,6 +550,7 @@
             this.historyPanel.PerformLayout();
             this.processPanel.ResumeLayout(false);
             this.processPanel.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.whiteListPanel.ResumeLayout(false);
             this.whiteListPanel.PerformLayout();
@@ -483,6 +558,9 @@
             this.blackListPanel.ResumeLayout(false);
             this.blackListPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.blackListGridView)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -530,6 +608,13 @@
         private System.Windows.Forms.ColumnHeader historyRunTime;
         private System.Windows.Forms.ColumnHeader HistoryProcessId;
         private System.Windows.Forms.ColumnHeader HistoryExecutablePath;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ListView summaryListView;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
     }
 }
 

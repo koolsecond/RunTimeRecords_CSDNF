@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace RunTimeRecords_CSDNF
@@ -185,6 +186,7 @@ namespace RunTimeRecords_CSDNF
         /// <summary>
         /// タブ切り替えイベント
         /// ・監視タブ以外ではタイマーを無効にする
+        /// ・集計タブの場合、集計処理を実施
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -198,6 +200,11 @@ namespace RunTimeRecords_CSDNF
             else
             {
                 timer1.Enabled = false;
+            }
+            // 集計タブ処理
+            if (tabControl1.SelectedTab.Name == "tabPage2")
+            {
+                Summary();
             }
         }
 
@@ -240,6 +247,42 @@ namespace RunTimeRecords_CSDNF
                     // TODO : リストの削除・保存の失敗時の動作
                     SetBlackListView();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 集計処理を実施し、画面に表示
+        /// </summary>
+        private void Summary()
+        {
+            // 直近のデータと履歴データを合体
+            List<ProcessDto> data = new List<ProcessDto>();
+            data.AddRange(processList);
+            data.AddRange(processHistory);
+
+            // 集計処理の実施
+            var query = data
+                .GroupBy(x => x.WindowTitle)
+                .Select(x => new {
+                    WindowTitle = x.Key
+                    ,
+                    TotalRunTime = new TimeSpan(x.Sum(y => y.RunTime.Ticks))
+                    ,
+                    LastDate = x.Max(y => y.ProcessStartTime)
+                })
+                .OrderByDescending(x => x.LastDate);
+
+            // 画面設定
+            summaryListView.Items.Clear();
+            foreach (var group in query)
+            {
+                string[] item =
+                {
+                    group.WindowTitle,
+                    Utilities.TimeFormatString(group.TotalRunTime),
+                    group.LastDate.Date.ToShortDateString(),
+                };
+                summaryListView.Items.Add(new ListViewItem(item));
             }
         }
     }
