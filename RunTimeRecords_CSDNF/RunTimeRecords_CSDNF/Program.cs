@@ -32,6 +32,11 @@ namespace RunTimeRecords_CSDNF
                 loggerManager.LogInfo("アプリケーション開始");
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+                // 設定ファイル読み込み
+                Settings.Instance.ReadAppConfig();
+                loggerManager.LogInfo("設定ファイル読み込み完了");
+                // 本体起動
+                loggerManager.LogInfo("本体起動開始");
                 Application.Run(new MainForm());
             }
             finally

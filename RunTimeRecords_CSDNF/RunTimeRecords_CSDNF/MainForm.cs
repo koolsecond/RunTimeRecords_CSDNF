@@ -7,19 +7,6 @@ namespace RunTimeRecords_CSDNF
 {
     public partial class MainForm : Form
     {
-
-        private static readonly string MasterFolderPath = @".\master";
-        private static readonly string WhiteListFile = @"whiteList.txt";
-        private static readonly string WhiteFilePath = MasterFolderPath + @"\" + WhiteListFile;
-        private static readonly string BlackListFile = @"blackList.txt";
-        private static readonly string BlackFilePath = MasterFolderPath + @"\" + BlackListFile;
-        //private static readonly Encoding SaveFileEncoding = Encoding.GetEncoding("shift_jis");
-        private static readonly string SaveFolderPath = @".\save";
-        private static readonly string SaveFileName = @"processes.csv";
-        private static readonly string SaveFilePath = SaveFolderPath + @"\" + SaveFileName;
-        private static readonly string HistoryFileName = @"history.csv";
-        private static readonly string HistoryFilePath = SaveFolderPath + @"\" + HistoryFileName;
-
         private readonly List<ProcessDto> processList;
         private readonly List<ProcessDto> processHistory;
         private readonly ProcessesDao processesDao;
@@ -36,23 +23,23 @@ namespace RunTimeRecords_CSDNF
             toolStripStatusLabel1.Text = string.Empty;
 
             // ホワイトリストの読込と設定
-            whiteList = listFileDao.LoadListFile(WhiteFilePath);
+            whiteList = listFileDao.LoadListFile(Settings.Instance.WhiteListFilePath);
             SetWhiteListView();
 
             // ブラックリストの読込と設定
-            blackList = listFileDao.LoadListFile(BlackFilePath);
+            blackList = listFileDao.LoadListFile(Settings.Instance.BlackListFilePath);
             SetBlackListView();
 
             // プロセスリストDaoのインスタンス作成
             processesDao = new ProcessesDao();
             // 履歴ファイルの読込
-            processHistory = processesDao.LoadProcesses(HistoryFilePath);
+            processHistory = processesDao.LoadProcesses(Settings.Instance.HistoryFilePath);
             // プロセスリストの初期化（前回保存内容の読込）
-            processList = processesDao.LoadProcesses(SaveFilePath);
+            processList = processesDao.LoadProcesses(Settings.Instance.SaveFilePath);
             // プロセスリスト内で当日以外のデータがあればヒストリーへ移動
             ProcessesDao.MoveProcessDataToHistory(processList, processHistory);
             // 履歴データを保存
-            processesDao.SaveProcesses(processHistory, HistoryFilePath);
+            processesDao.SaveProcesses(processHistory, Settings.Instance.HistoryFilePath);
             // 実行中のプロセスのデータを追加
             ProcessesDao.GetProcessList(processList, whiteList.DataList, blackList.DataList);
             // リストの初期化
@@ -138,7 +125,7 @@ namespace RunTimeRecords_CSDNF
             // 取得した値で差し替え
             SetProcessListView();
             // 自動保存
-            processesDao.SaveProcesses(processList, SaveFilePath);
+            processesDao.SaveProcesses(processList, Settings.Instance.SaveFilePath);
         }
 
         /// <summary>
@@ -263,7 +250,8 @@ namespace RunTimeRecords_CSDNF
             // 集計処理の実施
             var query = data
                 .GroupBy(x => x.WindowTitle)
-                .Select(x => new {
+                .Select(x => new
+                {
                     WindowTitle = x.Key
                     ,
                     TotalRunTime = new TimeSpan(x.Sum(y => y.RunTime.Ticks))
