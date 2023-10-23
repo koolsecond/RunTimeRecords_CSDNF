@@ -1,39 +1,28 @@
 ﻿using System;
-using System.IO;
+using System.IO.Abstractions;
 
 namespace RunTimeRecords_CSDNF
 {
     public static class Utilities
     {
         /// <summary>
-        /// 値の両端に「"」があれば削除して戻す
-        /// </summary>
-        /// <param name="value">削除対象文字列</param>
-        /// <returns>削除後文字列</returns>
-        public static string DoubleQuateDelete(string value)
-        {
-            if (value[0].Equals("\"") && value[value.Length - 1].Equals("\""))
-            {
-                return value.Substring(1, value.Length - 2);
-            }
-            else
-            {
-                return value;
-            }
-        }
-
-        /// <summary>
         /// 指定したパスのフォルダが存在していなければ作成する
         /// </summary>
         /// <param name="path"></param>
+        /// <param name="fileSystem">実際のファイルシステムなら指定不要。テスト時はモック指定</param>
         /// <returns></returns>
-        public static DirectoryInfo CreateDirectory(string path)
+        public static void CreateDirectory(string path, IFileSystem fileSystem = null)
         {
-            if (Directory.Exists(path))
+            if (fileSystem == null)
             {
-                return null;
+                fileSystem = new FileSystem(); // 実際のファイルシステム
             }
-            return Directory.CreateDirectory(path);
+
+            if (fileSystem.Directory.Exists(path))
+            {
+                return;
+            }
+            fileSystem.Directory.CreateDirectory(path);
         }
 
         /// <summary>

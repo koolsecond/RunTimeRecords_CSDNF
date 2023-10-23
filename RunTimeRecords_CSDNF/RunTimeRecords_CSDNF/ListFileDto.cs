@@ -2,7 +2,7 @@
 
 namespace RunTimeRecords_CSDNF
 {
-    internal class ListFileDto
+    public class ListFileDto
     {
         /// <summary>
         /// 保存先ファイルのフルパス
