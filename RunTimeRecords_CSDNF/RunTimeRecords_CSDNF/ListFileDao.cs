@@ -1,12 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 
 namespace RunTimeRecords_CSDNF
 {
-    internal class ListFileDao
+    public class ListFileDao
     {
         readonly LoggerManager loggerManager = new LoggerManager();
+        readonly IFileSystem fileSystem;
+
+        /// <summary>
+        /// 指定したファイルシステムで処理するためのコンストラクタ
+        /// </summary>
+        /// <param name="fileSystem"></param>
+        public ListFileDao(IFileSystem fileSystem)
+        {
+            this.fileSystem = fileSystem;
+        }
+        /// <summary>
+        /// 実際のファイルシステムで処理するためのコンストラクタ
+        /// </summary>
+        public ListFileDao() : this(new FileSystem())
+        {
+            // 実際のファイルシステムのインスタンスを生成して別のコンストラクタに渡す
+        }
 
         /// <summary>
         /// ファイルからテキストを読み込む、Dto生成
@@ -17,12 +35,12 @@ namespace RunTimeRecords_CSDNF
         {
             List<string> dataList = new List<string>();
             // 前回保存ファイルがあれば読み込みを実施
-            if (File.Exists(filePath))
+            if (fileSystem.File.Exists(filePath))
             {
                 // リストファイル読み込み
                 try
                 {
-                    dataList.AddRange(File.ReadAllLines(filePath));
+                    dataList.AddRange(fileSystem.File.ReadAllLines(filePath));
                 }
                 catch (IOException ex)
                 {
@@ -47,16 +65,16 @@ namespace RunTimeRecords_CSDNF
         public bool SaveListFile(ListFileDto fileDto)
         {
             // パスにフォルダ名があれば有無チェックと作成を実施
-            string directoryName = Path.GetDirectoryName(fileDto.FilePath);
+            string directoryName = fileSystem.Path.GetDirectoryName(fileDto.FilePath);
             if (directoryName != null)
             {
                 // 保存先フォルダが無ければ作成
-                Utilities.CreateDirectory(directoryName);
+                Utilities.CreateDirectory(directoryName, fileSystem);
             }
             // 書き込み処理
             try
             {
-                File.WriteAllLines(fileDto.FilePath, fileDto.DataList);
+                fileSystem.File.WriteAllLines(fileDto.FilePath, fileDto.DataList);
                 return true;
             }
             catch (IOException ex)
