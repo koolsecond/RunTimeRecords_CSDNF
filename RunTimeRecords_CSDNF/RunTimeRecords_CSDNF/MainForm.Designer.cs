@@ -51,6 +51,13 @@
             this.executablePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.processListLabel = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.summaryListView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.whiteListPanel = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
@@ -69,30 +76,28 @@
             this.addBlackDirectory = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.summaryListView = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ToolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.historyPanel.SuspendLayout();
             this.processPanel.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.whiteListPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.whiteListGridView)).BeginInit();
             this.blackListPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.blackListGridView)).BeginInit();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
             // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemFile});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(800, 24);
@@ -282,6 +287,68 @@
             this.tabPage2.Text = "集計";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.summaryListView);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 49);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(786, 326);
+            this.panel2.TabIndex = 1;
+            // 
+            // summaryListView
+            // 
+            this.summaryListView.BackColor = System.Drawing.Color.LightSeaGreen;
+            this.summaryListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader3,
+            this.columnHeader2});
+            this.summaryListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.summaryListView.FullRowSelect = true;
+            this.summaryListView.GridLines = true;
+            this.summaryListView.HideSelection = false;
+            this.summaryListView.Location = new System.Drawing.Point(0, 0);
+            this.summaryListView.Name = "summaryListView";
+            this.summaryListView.Size = new System.Drawing.Size(786, 326);
+            this.summaryListView.TabIndex = 1;
+            this.summaryListView.UseCompatibleStateImageBehavior = false;
+            this.summaryListView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "ウィンドウ名";
+            this.columnHeader1.Width = 200;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "実行時間";
+            this.columnHeader3.Width = 100;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "最終監視日";
+            this.columnHeader2.Width = 100;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Aquamarine;
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(786, 46);
+            this.panel1.TabIndex = 0;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label5.Location = new System.Drawing.Point(3, 13);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(123, 19);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "実行時間集計";
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.whiteListPanel);
@@ -469,67 +536,20 @@
             this.timer1.Interval = 60000;
             this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
             // 
-            // panel1
+            // ToolStripMenuItemFile
             // 
-            this.panel1.BackColor = System.Drawing.Color.Aquamarine;
-            this.panel1.Controls.Add(this.label5);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(786, 46);
-            this.panel1.TabIndex = 0;
+            this.ToolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemSave});
+            this.ToolStripMenuItemFile.Name = "ToolStripMenuItemFile";
+            this.ToolStripMenuItemFile.Size = new System.Drawing.Size(67, 20);
+            this.ToolStripMenuItemFile.Text = "ファイル(&F)";
             // 
-            // panel2
+            // ToolStripMenuItemSave
             // 
-            this.panel2.Controls.Add(this.summaryListView);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 49);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(786, 326);
-            this.panel2.TabIndex = 1;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label5.Location = new System.Drawing.Point(3, 13);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(123, 19);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "実行時間集計";
-            // 
-            // summaryListView
-            // 
-            this.summaryListView.BackColor = System.Drawing.Color.LightSeaGreen;
-            this.summaryListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader3,
-            this.columnHeader2});
-            this.summaryListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.summaryListView.FullRowSelect = true;
-            this.summaryListView.GridLines = true;
-            this.summaryListView.HideSelection = false;
-            this.summaryListView.Location = new System.Drawing.Point(0, 0);
-            this.summaryListView.Name = "summaryListView";
-            this.summaryListView.Size = new System.Drawing.Size(786, 326);
-            this.summaryListView.TabIndex = 1;
-            this.summaryListView.UseCompatibleStateImageBehavior = false;
-            this.summaryListView.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "ウィンドウ名";
-            this.columnHeader1.Width = 200;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "実行時間";
-            this.columnHeader3.Width = 100;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "最終監視日";
-            this.columnHeader2.Width = 100;
+            this.ToolStripMenuItemSave.Name = "ToolStripMenuItemSave";
+            this.ToolStripMenuItemSave.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemSave.Text = "保存(&S)";
+            this.ToolStripMenuItemSave.Click += new System.EventHandler(this.ToolStripMenuItemSave_Click);
             // 
             // MainForm
             // 
@@ -542,6 +562,8 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";
             this.Text = "RunTimeRecords";
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -551,6 +573,9 @@
             this.processPanel.ResumeLayout(false);
             this.processPanel.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.whiteListPanel.ResumeLayout(false);
             this.whiteListPanel.PerformLayout();
@@ -558,9 +583,6 @@
             this.blackListPanel.ResumeLayout(false);
             this.blackListPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.blackListGridView)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -615,6 +637,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemFile;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSave;
     }
 }
 

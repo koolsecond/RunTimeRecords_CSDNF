@@ -101,6 +101,8 @@
     </Compile>
     <Compile Include="ProcessDto.cs" />
     <Compile Include="ProcessesDao.cs" />
+    <Compile Include="ProcessSummaryDao.cs" />
+    <Compile Include="ProcessSummaryDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
