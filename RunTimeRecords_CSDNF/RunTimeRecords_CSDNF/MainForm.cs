@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Windows.Forms;
 
 namespace RunTimeRecords_CSDNF
 {
     public partial class MainForm : Form
     {
+        private static readonly LoggerManager loggerManager = new LoggerManager();
         private readonly List<ProcessDto> processList;
         private readonly List<ProcessDto> processHistory;
-        private readonly ProcessesDao processesDao;
+        private readonly ProcessesDao processesDao = new ProcessesDao();
+        private List<ProcessSummaryDto> processSummaryList;
+        private readonly ProcessSummaryDao processSummaryDao = new ProcessSummaryDao();
         private readonly ListFileDto whiteList;
         private readonly ListFileDto blackList;
         private readonly ListFileDao listFileDao = new ListFileDao();
@@ -18,9 +21,10 @@ namespace RunTimeRecords_CSDNF
         {
             InitializeComponent();
             // TODO : ★未実装機能は非表示
-            menuStrip.Visible = false;
             statusStrip.Visible = false;
             toolStripStatusLabel1.Text = string.Empty;
+            // todo : ★ファイル⇒保存が可能なタブは「集計」のみ（後で初期タブでも可能とする）
+            ToolStripMenuItemSave.Enabled = tabControl1.SelectedTab.Name == "tabPage2";
 
             // ホワイトリストの読込と設定
             whiteList = listFileDao.LoadListFile(Settings.Instance.WhiteListFilePath);
@@ -30,8 +34,6 @@ namespace RunTimeRecords_CSDNF
             blackList = listFileDao.LoadListFile(Settings.Instance.BlackListFilePath);
             SetBlackListView();
 
-            // プロセスリストDaoのインスタンス作成
-            processesDao = new ProcessesDao();
             // 履歴ファイルの読込
             processHistory = processesDao.LoadProcesses(Settings.Instance.HistoryFilePath);
             // プロセスリストの初期化（前回保存内容の読込）
@@ -180,19 +182,14 @@ namespace RunTimeRecords_CSDNF
         private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // 監視タブ以外ではタイマーを無効にする
-            if (tabControl1.SelectedTab.Name == "tabPage1")
-            {
-                timer1.Enabled = true;
-            }
-            else
-            {
-                timer1.Enabled = false;
-            }
+            timer1.Enabled = tabControl1.SelectedTab.Name == "tabPage1";
             // 集計タブ処理
             if (tabControl1.SelectedTab.Name == "tabPage2")
             {
                 Summary();
             }
+            // ファイル⇒保存が可能なタブは「集計」のみ
+            ToolStripMenuItemSave.Enabled = tabControl1.SelectedTab.Name == "tabPage2";
         }
 
         /// <summary>
@@ -248,29 +245,79 @@ namespace RunTimeRecords_CSDNF
             data.AddRange(processHistory);
 
             // 集計処理の実施
-            var query = data
-                .GroupBy(x => x.WindowTitle)
-                .Select(x => new
-                {
-                    WindowTitle = x.Key
-                    ,
-                    TotalRunTime = new TimeSpan(x.Sum(y => y.RunTime.Ticks))
-                    ,
-                    LastDate = x.Max(y => y.ProcessStartTime)
-                })
-                .OrderByDescending(x => x.LastDate);
+            processSummaryList = processSummaryDao.Summary(data);
 
             // 画面設定
             summaryListView.Items.Clear();
-            foreach (var group in query)
+            foreach (ProcessSummaryDto processSummary in processSummaryList)
             {
                 string[] item =
                 {
-                    group.WindowTitle,
-                    Utilities.TimeFormatString(group.TotalRunTime),
-                    group.LastDate.Date.ToShortDateString(),
+                    processSummary.WindowTitle,
+                    Utilities.TimeFormatString(processSummary.TotalRunTime),
+                    processSummary.LastDate.Date.ToShortDateString(),
                 };
                 summaryListView.Items.Add(new ListViewItem(item));
+            }
+        }
+        /// <summary>
+        /// ファイル⇒保存を選択した時のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemSave_Click(object sender, EventArgs e)
+        {
+            // 保存ダイアログを表示する
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                FileName = "summary.csv", // 初期ファイル名
+                Filter = "CSVファイル(*.csv;*.CSV)|*.csv;*.CSV|すべてのファイル(*.*)|*.*", // ファイルの種類
+                FilterIndex = 1, // 1つ目を指定
+                Title = "保存先のファイルを選択して下さい",
+                RestoreDirectory = true // ダイアログボックスを閉じる前に現在のディレクトリを復元するようにする
+            };
+
+            // ダイアログ表示
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                bool saveResultFlag = false;
+                // 選択されたファイルに出力する
+                if (tabControl1.SelectedTab.Name == "tabPage2")
+                {
+                    // 集計タブが開かれている場合は集計データを保存する
+                    saveResultFlag = processSummaryDao.SaveSummaryList(processSummaryList, saveFileDialog.FileName);
+                }
+                if (saveResultFlag)
+                {
+                    // ダイアログメッセージを表示してフォルダを開くか確認する。
+                    string path = Path.GetDirectoryName(saveFileDialog.FileName);
+                    string caption = "フォルダ確認";
+                    string message = "ファイルを保存しました。" + Environment.NewLine
+                        + $"フォルダ「{path}」を開きますか？";
+                    DialogResult openDialogResultFlag = MessageBox.Show(message, caption, MessageBoxButtons.YesNo);
+                    if (openDialogResultFlag == DialogResult.Yes)
+                    {
+                        // 関連付けでフォルダを開く
+                        try
+                        {
+                            System.Diagnostics.Process.Start(path);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                            loggerManager.LogError($"フォルダを開く動作のエラー,{path}", ex);
+                        }
+                    }
+                }
+                else
+                {
+                    // 保存に失敗した場合
+                    // ダイアログメッセージを表示
+                    _ = Path.GetDirectoryName(saveFileDialog.FileName);
+                    string caption = "フォルダ確認";
+                    string message = "ファイルの保存に失敗しました。";
+                    _ = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }
