@@ -23,8 +23,6 @@ namespace RunTimeRecords_CSDNF
             // TODO : ★未実装機能は非表示
             statusStrip.Visible = false;
             toolStripStatusLabel1.Text = string.Empty;
-            // todo : ★ファイル⇒保存が可能なタブは「集計」のみ（後で初期タブでも可能とする）
-            ToolStripMenuItemSave.Enabled = tabControl1.SelectedTab.Name == "tabPage2";
 
             // ホワイトリストの読込と設定
             whiteList = listFileDao.LoadListFile(Settings.Instance.WhiteListFilePath);
@@ -188,8 +186,8 @@ namespace RunTimeRecords_CSDNF
             {
                 Summary();
             }
-            // ファイル⇒保存が可能なタブは「集計」のみ
-            ToolStripMenuItemSave.Enabled = tabControl1.SelectedTab.Name == "tabPage2";
+            // ファイル⇒保存が可能なタブは「監視」「集計」のみ
+            ToolStripMenuItemSave.Enabled = tabControl1.SelectedTab.Name == "tabPage1" || tabControl1.SelectedTab.Name == "tabPage2";
         }
 
         /// <summary>
@@ -267,10 +265,23 @@ namespace RunTimeRecords_CSDNF
         /// <param name="e"></param>
         private void ToolStripMenuItemSave_Click(object sender, EventArgs e)
         {
+            // 初期ファイル名の指定
+            string fileName = "";
+            if (tabControl1.SelectedTab.Name == "tabPage2")
+            {
+                // 集計タブ
+                fileName = "summary.csv";
+            }
+            else if (tabControl1.SelectedTab.Name == "tabPage1")
+            {
+                // 監視タブ
+                fileName = "history.csv";
+            }
+
             // 保存ダイアログを表示する
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                FileName = "summary.csv", // 初期ファイル名
+                FileName = fileName, // 初期ファイル名
                 Filter = "CSVファイル(*.csv;*.CSV)|*.csv;*.CSV|すべてのファイル(*.*)|*.*", // ファイルの種類
                 FilterIndex = 1, // 1つ目を指定
                 Title = "保存先のファイルを選択して下さい",
@@ -287,6 +298,17 @@ namespace RunTimeRecords_CSDNF
                     // 集計タブが開かれている場合は集計データを保存する
                     saveResultFlag = processSummaryDao.SaveSummaryList(processSummaryList, saveFileDialog.FileName);
                 }
+                else if (tabControl1.SelectedTab.Name == "tabPage1")
+                {
+                    // 監視タブが開かれている場合は監視データと履歴データを保存する
+                    // 直近のデータと履歴データを合体
+                    List<ProcessDto> data = new List<ProcessDto>();
+                    data.AddRange(processList);
+                    data.AddRange(processHistory);
+                    // 保存処理の実行
+                    saveResultFlag = processesDao.SaveProcesses(data, saveFileDialog.FileName);
+                }
+                // 保存処理完了後処理
                 if (saveResultFlag)
                 {
                     // ダイアログメッセージを表示してフォルダを開くか確認する。
@@ -313,8 +335,9 @@ namespace RunTimeRecords_CSDNF
                 {
                     // 保存に失敗した場合
                     // ダイアログメッセージを表示
-                    _ = Path.GetDirectoryName(saveFileDialog.FileName);
-                    string caption = "フォルダ確認";
+                    string path = Path.GetDirectoryName(saveFileDialog.FileName);
+                    loggerManager.LogError($"ファイル保存失敗,{path}");
+                    string caption = "ファイル保存失敗";
                     string message = "ファイルの保存に失敗しました。";
                     _ = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
