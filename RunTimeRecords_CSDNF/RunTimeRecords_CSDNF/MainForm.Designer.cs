@@ -30,6 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.ToolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -76,8 +78,7 @@
             this.addBlackDirectory = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.ToolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemOpenDirectory = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -103,6 +104,22 @@
             this.menuStrip.Size = new System.Drawing.Size(800, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
+            // 
+            // ToolStripMenuItemFile
+            // 
+            this.ToolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemSave,
+            this.ToolStripMenuItemOpenDirectory});
+            this.ToolStripMenuItemFile.Name = "ToolStripMenuItemFile";
+            this.ToolStripMenuItemFile.Size = new System.Drawing.Size(67, 20);
+            this.ToolStripMenuItemFile.Text = "ファイル(&F)";
+            // 
+            // ToolStripMenuItemSave
+            // 
+            this.ToolStripMenuItemSave.Name = "ToolStripMenuItemSave";
+            this.ToolStripMenuItemSave.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemSave.Text = "保存(&S)";
+            this.ToolStripMenuItemSave.Click += new System.EventHandler(this.ToolStripMenuItemSave_Click);
             // 
             // statusStrip
             // 
@@ -536,20 +553,12 @@
             this.timer1.Interval = 60000;
             this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
             // 
-            // ToolStripMenuItemFile
+            // ToolStripMenuItemOpenDirectory
             // 
-            this.ToolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItemSave});
-            this.ToolStripMenuItemFile.Name = "ToolStripMenuItemFile";
-            this.ToolStripMenuItemFile.Size = new System.Drawing.Size(67, 20);
-            this.ToolStripMenuItemFile.Text = "ファイル(&F)";
-            // 
-            // ToolStripMenuItemSave
-            // 
-            this.ToolStripMenuItemSave.Name = "ToolStripMenuItemSave";
-            this.ToolStripMenuItemSave.Size = new System.Drawing.Size(180, 22);
-            this.ToolStripMenuItemSave.Text = "保存(&S)";
-            this.ToolStripMenuItemSave.Click += new System.EventHandler(this.ToolStripMenuItemSave_Click);
+            this.ToolStripMenuItemOpenDirectory.Name = "ToolStripMenuItemOpenDirectory";
+            this.ToolStripMenuItemOpenDirectory.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemOpenDirectory.Text = "保存フォルダを開く(&O)";
+            this.ToolStripMenuItemOpenDirectory.Click += new System.EventHandler(this.ToolStripMenuItemOpenDirectory_Click);
             // 
             // MainForm
             // 
@@ -639,6 +648,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemFile;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSave;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemOpenDirectory;
     }
 }
 

@@ -188,6 +188,8 @@ namespace RunTimeRecords_CSDNF
             }
             // ファイル⇒保存が可能なタブは「監視」「集計」のみ
             ToolStripMenuItemSave.Enabled = tabControl1.SelectedTab.Name == "tabPage1" || tabControl1.SelectedTab.Name == "tabPage2";
+            // フォルダを開くことが可能なタブは「監視」「対象」のみ
+            ToolStripMenuItemOpenDirectory.Enabled = tabControl1.SelectedTab.Name == "tabPage1" || tabControl1.SelectedTab.Name == "tabPage3";
         }
 
         /// <summary>
@@ -341,6 +343,36 @@ namespace RunTimeRecords_CSDNF
                     string message = "ファイルの保存に失敗しました。";
                     _ = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+        /// <summary>
+        /// 「保存フォルダを開く」を選択した時のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolStripMenuItemOpenDirectory_Click(object sender, EventArgs e)
+        {
+            // 対象フォルダ指定
+            string dirctoryPath = "";
+            if (tabControl1.SelectedTab.Name == "tabPage1")
+            {
+                // 監視タブの場合
+                dirctoryPath = Settings.Instance.SaveFolderPath;
+            }
+            else if (tabControl1.SelectedTab.Name == "tabPage3")
+            {
+                // 対象タブの場合
+                dirctoryPath = Settings.Instance.MasterFolderPath;
+            }
+            // 関連付けでフォルダを開く
+            try
+            {
+                System.Diagnostics.Process.Start(dirctoryPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                loggerManager.LogError($"フォルダを開く動作のエラー,{dirctoryPath}", ex);
             }
         }
     }
