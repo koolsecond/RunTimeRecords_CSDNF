@@ -32,7 +32,7 @@ namespace RunTimeRecords_CSDNF
         /// <returns>変換後文字列</returns>
         public static string TimeFormatString(TimeSpan timeSpan)
         {
-            return string.Format("{0:D2}:{1:D2}:{2:D2}", (int)timeSpan.Hours, (int)timeSpan.Minutes, (int)timeSpan.Seconds);
+            return string.Format("{0:D2}:{1:D2}:{2:D2}", (int)timeSpan.TotalHours, (int)timeSpan.Minutes, (int)timeSpan.Seconds);
         }
     }
 }
