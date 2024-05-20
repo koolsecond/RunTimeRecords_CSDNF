@@ -32,6 +32,7 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.ToolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemOpenDirectory = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -53,6 +54,13 @@
             this.executablePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.processListLabel = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.searchButton = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.searchEndDate = new System.Windows.Forms.DateTimePicker();
+            this.searchStartDate = new System.Windows.Forms.DateTimePicker();
+            this.label6 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.summaryListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -78,7 +86,6 @@
             this.addBlackDirectory = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.ToolStripMenuItemOpenDirectory = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -86,6 +93,8 @@
             this.historyPanel.SuspendLayout();
             this.processPanel.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -120,6 +129,13 @@
             this.ToolStripMenuItemSave.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItemSave.Text = "保存(&S)";
             this.ToolStripMenuItemSave.Click += new System.EventHandler(this.ToolStripMenuItemSave_Click);
+            // 
+            // ToolStripMenuItemOpenDirectory
+            // 
+            this.ToolStripMenuItemOpenDirectory.Name = "ToolStripMenuItemOpenDirectory";
+            this.ToolStripMenuItemOpenDirectory.Size = new System.Drawing.Size(178, 22);
+            this.ToolStripMenuItemOpenDirectory.Text = "保存フォルダを開く(&O)";
+            this.ToolStripMenuItemOpenDirectory.Click += new System.EventHandler(this.ToolStripMenuItemOpenDirectory_Click);
             // 
             // statusStrip
             // 
@@ -294,6 +310,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.panel3);
             this.tabPage2.Controls.Add(this.panel2);
             this.tabPage2.Controls.Add(this.panel1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -304,13 +321,84 @@
             this.tabPage2.Text = "集計";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.groupBox1);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 49);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(786, 43);
+            this.panel3.TabIndex = 2;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.BackColor = System.Drawing.Color.Transparent;
+            this.groupBox1.Controls.Add(this.searchButton);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.searchEndDate);
+            this.groupBox1.Controls.Add(this.searchStartDate);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(786, 43);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "検索";
+            // 
+            // searchButton
+            // 
+            this.searchButton.Location = new System.Drawing.Point(705, 14);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(75, 23);
+            this.searchButton.TabIndex = 4;
+            this.searchButton.Text = "検索";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(183, 19);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(17, 12);
+            this.label7.TabIndex = 3;
+            this.label7.Text = "～";
+            // 
+            // searchEndDate
+            // 
+            this.searchEndDate.CustomFormat = "";
+            this.searchEndDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.searchEndDate.Location = new System.Drawing.Point(206, 14);
+            this.searchEndDate.Name = "searchEndDate";
+            this.searchEndDate.Size = new System.Drawing.Size(111, 19);
+            this.searchEndDate.TabIndex = 2;
+            // 
+            // searchStartDate
+            // 
+            this.searchStartDate.CustomFormat = "";
+            this.searchStartDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.searchStartDate.Location = new System.Drawing.Point(66, 14);
+            this.searchStartDate.Name = "searchStartDate";
+            this.searchStartDate.Size = new System.Drawing.Size(111, 19);
+            this.searchStartDate.TabIndex = 1;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 19);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 12);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "日付範囲";
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.summaryListView);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 49);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(3, 92);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(786, 326);
+            this.panel2.Size = new System.Drawing.Size(786, 283);
             this.panel2.TabIndex = 1;
             // 
             // summaryListView
@@ -326,7 +414,7 @@
             this.summaryListView.HideSelection = false;
             this.summaryListView.Location = new System.Drawing.Point(0, 0);
             this.summaryListView.Name = "summaryListView";
-            this.summaryListView.Size = new System.Drawing.Size(786, 326);
+            this.summaryListView.Size = new System.Drawing.Size(786, 283);
             this.summaryListView.TabIndex = 1;
             this.summaryListView.UseCompatibleStateImageBehavior = false;
             this.summaryListView.View = System.Windows.Forms.View.Details;
@@ -553,13 +641,6 @@
             this.timer1.Interval = 60000;
             this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
             // 
-            // ToolStripMenuItemOpenDirectory
-            // 
-            this.ToolStripMenuItemOpenDirectory.Name = "ToolStripMenuItemOpenDirectory";
-            this.ToolStripMenuItemOpenDirectory.Size = new System.Drawing.Size(180, 22);
-            this.ToolStripMenuItemOpenDirectory.Text = "保存フォルダを開く(&O)";
-            this.ToolStripMenuItemOpenDirectory.Click += new System.EventHandler(this.ToolStripMenuItemOpenDirectory_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -582,6 +663,9 @@
             this.processPanel.ResumeLayout(false);
             this.processPanel.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -649,6 +733,13 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemFile;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSave;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemOpenDirectory;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button searchButton;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.DateTimePicker searchEndDate;
+        private System.Windows.Forms.DateTimePicker searchStartDate;
     }
 }
 

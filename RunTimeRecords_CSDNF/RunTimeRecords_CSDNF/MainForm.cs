@@ -45,6 +45,10 @@ namespace RunTimeRecords_CSDNF
             // リストの初期化
             SetProcessListView();
             SetHistoryListView();
+            // 集計タブの検索欄の初期化
+            // 日付範囲指定部分
+            searchStartDate.Value = DateTime.Today.AddMonths(-1);
+            searchEndDate.Value = DateTime.Today;
         }
 
         /// <summary>
@@ -244,6 +248,9 @@ namespace RunTimeRecords_CSDNF
             data.AddRange(processList);
             data.AddRange(processHistory);
 
+            // 検索条件の適用
+            data = data.FindAll(d => d.ProcessStartTime.Date >= searchStartDate.Value && d.ProcessStartTime.Date <= searchEndDate.Value);
+
             // 集計処理の実施
             processSummaryList = processSummaryDao.Summary(data);
 
@@ -374,6 +381,16 @@ namespace RunTimeRecords_CSDNF
                 Console.WriteLine(ex);
                 loggerManager.LogError($"フォルダを開く動作のエラー,{dirctoryPath}", ex);
             }
+        }
+
+        /// <summary>
+        /// 集計タブで再度「検索」実行時のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SearchButton_Click(object sender, EventArgs e)
+        {
+            Summary();
         }
     }
 }
