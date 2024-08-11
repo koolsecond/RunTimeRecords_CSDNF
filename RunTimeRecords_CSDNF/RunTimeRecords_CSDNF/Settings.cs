@@ -11,6 +11,7 @@ namespace RunTimeRecords_CSDNF
         private static readonly string KeyMasterFolderPath = "MasterFolderPath";
         private static readonly string KeyWhiteListFileName = "WhiteListFileName";
         private static readonly string KeyBlackListFileName = "BlackListFileName";
+        private static readonly string KeyDictListFileName = "DictListFileName";
         private static readonly string KeySaveFolderPath = "SaveFolderPath";
         private static readonly string KeySaveFileName = "SaveFileName";
         private static readonly string KeyHistoryFileName = "HistoryFileName";
@@ -40,6 +41,16 @@ namespace RunTimeRecords_CSDNF
         public String BlackListFilePath
         {
             get { return _masterFolderPath + @"\" + _blackListFileName; ; }
+        }
+
+        private string _dictListFileName;
+        public String DictListFileName
+        {
+            get { return _dictListFileName; }
+        }
+        public String DictListFilePath
+        {
+            get { return _masterFolderPath + @"\" + _dictListFileName; }
         }
 
         private string _saveFolderPath;
@@ -77,6 +88,7 @@ namespace RunTimeRecords_CSDNF
             _masterFolderPath = "";
             _whiteListFileName = "";
             _blackListFileName = "";
+            _dictListFileName = "";
             _saveFolderPath = "";
             _saveFileName = "";
             _historyFileName = "";
@@ -108,6 +120,7 @@ namespace RunTimeRecords_CSDNF
             _instance._masterFolderPath = ConfigurationManager.AppSettings[KeyMasterFolderPath];
             _instance._whiteListFileName = ConfigurationManager.AppSettings[KeyWhiteListFileName];
             _instance._blackListFileName = ConfigurationManager.AppSettings[KeyBlackListFileName];
+            _instance._dictListFileName = ConfigurationManager.AppSettings[KeyDictListFileName];
             _instance._saveFolderPath = ConfigurationManager.AppSettings[KeySaveFolderPath];
             _instance._saveFileName = ConfigurationManager.AppSettings[KeySaveFileName];
             _instance._historyFileName = ConfigurationManager.AppSettings[KeyHistoryFileName];

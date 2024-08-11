@@ -38,7 +38,7 @@ namespace RunTimeRecords_CSDNF
         /// <summary>
         /// 実行中のプロセスリストを取得
         /// </summary>
-        public static List<ProcessDto> GetProcessList(List<ProcessDto> processList, List<string> whiteList, List<string> blackList)
+        public static List<ProcessDto> GetProcessList(List<ProcessDto> processList, List<string> whiteList, List<string> blackList, Dictionary<string, string> convdict = null)
         {
             var nowTime = DateTime.Now;
 
@@ -95,6 +95,12 @@ namespace RunTimeRecords_CSDNF
                 }
                 try
                 {
+                    // 実行パスが変換リストに存在している場合はウィンドウ名を書き換える
+                    if (convdict != null && convdict.ContainsKey(executablePath))
+                    {
+                        windowTitle = convdict[executablePath];
+                    }
+
                     // 時間計算
                     DateTime startTime = process.StartTime;
                     TimeSpan runTime = nowTime - startTime;
@@ -102,7 +108,7 @@ namespace RunTimeRecords_CSDNF
                     ProcessDto existRow = null;
                     foreach (ProcessDto row in processList)
                     {
-                        if (row.WindowTitle == windowTitle && row.ProcessStartTime.ToString().Equals(startTime.ToString()))
+                        if (row.ProcessId == processId && row.ProcessStartTime.ToString().Equals(startTime.ToString()))
                         {
                             existRow = row;
                             break;

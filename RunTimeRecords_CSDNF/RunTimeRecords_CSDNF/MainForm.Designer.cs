@@ -85,7 +85,21 @@
             this.addBlackDirectoryButton = new System.Windows.Forms.Button();
             this.addBlackDirectory = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.allDictionaryDataGridView = new System.Windows.Forms.DataGridView();
+            this.label9 = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.dictAddButton = new System.Windows.Forms.Button();
+            this.addDictWindowName = new System.Windows.Forms.TextBox();
+            this.addDictExeFilePath = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.deleteDictListButton = new System.Windows.Forms.DataGridViewButtonColumn();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -102,6 +116,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.whiteListGridView)).BeginInit();
             this.blackListPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.blackListGridView)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            this.panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.allDictionaryDataGridView)).BeginInit();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -126,7 +144,7 @@
             // ToolStripMenuItemSave
             // 
             this.ToolStripMenuItemSave.Name = "ToolStripMenuItemSave";
-            this.ToolStripMenuItemSave.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItemSave.Size = new System.Drawing.Size(178, 22);
             this.ToolStripMenuItemSave.Text = "保存(&S)";
             this.ToolStripMenuItemSave.Click += new System.EventHandler(this.ToolStripMenuItemSave_Click);
             // 
@@ -158,6 +176,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
@@ -635,11 +654,146 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "ブラックリスト追加";
             // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.panel5);
+            this.tabPage4.Controls.Add(this.panel4);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(792, 378);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "辞書";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.panel5.Controls.Add(this.allDictionaryDataGridView);
+            this.panel5.Controls.Add(this.label9);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(3, 74);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(786, 301);
+            this.panel5.TabIndex = 1;
+            // 
+            // allDictionaryDataGridView
+            // 
+            this.allDictionaryDataGridView.AllowUserToAddRows = false;
+            this.allDictionaryDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.allDictionaryDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1,
+            this.dataGridViewTextBoxColumn2,
+            this.deleteDictListButton});
+            this.allDictionaryDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.allDictionaryDataGridView.Location = new System.Drawing.Point(0, 12);
+            this.allDictionaryDataGridView.Name = "allDictionaryDataGridView";
+            this.allDictionaryDataGridView.RowTemplate.Height = 21;
+            this.allDictionaryDataGridView.Size = new System.Drawing.Size(786, 289);
+            this.allDictionaryDataGridView.TabIndex = 2;
+            this.allDictionaryDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.AllDictionaryDataGridView_CellContentClick);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label9.Location = new System.Drawing.Point(0, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(53, 12);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "辞書一覧";
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.Transparent;
+            this.panel4.Controls.Add(this.label11);
+            this.panel4.Controls.Add(this.label10);
+            this.panel4.Controls.Add(this.dictAddButton);
+            this.panel4.Controls.Add(this.addDictWindowName);
+            this.panel4.Controls.Add(this.addDictExeFilePath);
+            this.panel4.Controls.Add(this.label8);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel4.Location = new System.Drawing.Point(3, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(786, 71);
+            this.panel4.TabIndex = 0;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(344, 17);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(96, 12);
+            this.label11.TabIndex = 5;
+            this.label11.Text = "変換後ウィンドウ名";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(38, 17);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(82, 12);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "実行ファイルパス";
+            // 
+            // dictAddButton
+            // 
+            this.dictAddButton.Location = new System.Drawing.Point(550, 34);
+            this.dictAddButton.Name = "dictAddButton";
+            this.dictAddButton.Size = new System.Drawing.Size(75, 23);
+            this.dictAddButton.TabIndex = 3;
+            this.dictAddButton.Text = "追加";
+            this.dictAddButton.UseVisualStyleBackColor = true;
+            this.dictAddButton.Click += new System.EventHandler(this.DictAddButton_Click);
+            // 
+            // addDictWindowName
+            // 
+            this.addDictWindowName.Location = new System.Drawing.Point(346, 36);
+            this.addDictWindowName.Name = "addDictWindowName";
+            this.addDictWindowName.Size = new System.Drawing.Size(198, 19);
+            this.addDictWindowName.TabIndex = 2;
+            // 
+            // addDictExeFilePath
+            // 
+            this.addDictExeFilePath.Location = new System.Drawing.Point(40, 36);
+            this.addDictExeFilePath.Name = "addDictExeFilePath";
+            this.addDictExeFilePath.Size = new System.Drawing.Size(300, 19);
+            this.addDictExeFilePath.TabIndex = 1;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label8.Location = new System.Drawing.Point(0, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(53, 12);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "辞書追加";
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 60000;
             this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.HeaderText = "実行ファイルパス";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.Width = 300;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.HeaderText = "変換後ウィンドウ名";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.Width = 200;
+            // 
+            // deleteDictListButton
+            // 
+            this.deleteDictListButton.HeaderText = "削除";
+            this.deleteDictListButton.Name = "deleteDictListButton";
+            this.deleteDictListButton.Text = "削除";
+            this.deleteDictListButton.UseColumnTextForButtonValue = true;
             // 
             // MainForm
             // 
@@ -676,6 +830,12 @@
             this.blackListPanel.ResumeLayout(false);
             this.blackListPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.blackListGridView)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.allDictionaryDataGridView)).EndInit();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -740,6 +900,20 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.DateTimePicker searchEndDate;
         private System.Windows.Forms.DateTimePicker searchStartDate;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.DataGridView allDictionaryDataGridView;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button dictAddButton;
+        private System.Windows.Forms.TextBox addDictWindowName;
+        private System.Windows.Forms.TextBox addDictExeFilePath;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewButtonColumn deleteDictListButton;
     }
 }
 

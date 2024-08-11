@@ -90,6 +90,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DictFileDao.cs" />
+    <Compile Include="DictFileDto.cs" />
     <Compile Include="ListFileDao.cs" />
     <Compile Include="ListFileDto.cs" />
     <Compile Include="LoggerManager.cs" />

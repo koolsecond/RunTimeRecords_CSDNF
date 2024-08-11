@@ -15,7 +15,9 @@ namespace RunTimeRecords_CSDNF
         private readonly ProcessSummaryDao processSummaryDao = new ProcessSummaryDao();
         private readonly ListFileDto whiteList;
         private readonly ListFileDto blackList;
+        private readonly DictFileDto dictFileDto;
         private readonly ListFileDao listFileDao = new ListFileDao();
+        private readonly DictFileDao dictFileDao = new DictFileDao();
 
         public MainForm()
         {
@@ -32,6 +34,10 @@ namespace RunTimeRecords_CSDNF
             blackList = listFileDao.LoadListFile(Settings.Instance.BlackListFilePath);
             SetBlackListView();
 
+            // 辞書の読込と設定
+            dictFileDto = dictFileDao.LoadDictFile(Settings.Instance.DictListFilePath);
+            SetAllDictListView();
+
             // 履歴ファイルの読込
             processHistory = processesDao.LoadProcesses(Settings.Instance.HistoryFilePath);
             // プロセスリストの初期化（前回保存内容の読込）
@@ -41,7 +47,7 @@ namespace RunTimeRecords_CSDNF
             // 履歴データを保存
             processesDao.SaveProcesses(processHistory, Settings.Instance.HistoryFilePath);
             // 実行中のプロセスのデータを追加
-            ProcessesDao.GetProcessList(processList, whiteList.DataList, blackList.DataList);
+            ProcessesDao.GetProcessList(processList, whiteList.DataList, blackList.DataList, dictFileDto.DataList);
             // リストの初期化
             SetProcessListView();
             SetHistoryListView();
@@ -114,6 +120,23 @@ namespace RunTimeRecords_CSDNF
             foreach (string path in blackList.DataList)
             {
                 blackListGridView.Rows.Add(path);
+            }
+        }
+
+        /// <summary>
+        /// 辞書一覧表示処理
+        /// </summary>
+        private void SetAllDictListView()
+        {
+            allDictionaryDataGridView.Rows.Clear();
+            foreach (var dict in dictFileDto.DataList)
+            {
+                string[] item =
+                {
+                    dict.Key,
+                    dict.Value,
+                };
+                allDictionaryDataGridView.Rows.Add(item);
             }
         }
 
@@ -192,8 +215,8 @@ namespace RunTimeRecords_CSDNF
             }
             // ファイル⇒保存が可能なタブは「監視」「集計」のみ
             ToolStripMenuItemSave.Enabled = tabControl1.SelectedTab.Name == "tabPage1" || tabControl1.SelectedTab.Name == "tabPage2";
-            // フォルダを開くことが可能なタブは「監視」「対象」のみ
-            ToolStripMenuItemOpenDirectory.Enabled = tabControl1.SelectedTab.Name == "tabPage1" || tabControl1.SelectedTab.Name == "tabPage3";
+            // フォルダを開くことが可能なタブは「監視」「対象」「辞書」のみ
+            ToolStripMenuItemOpenDirectory.Enabled = tabControl1.SelectedTab.Name == "tabPage1" || tabControl1.SelectedTab.Name == "tabPage3" || tabControl1.SelectedTab.Name == "tabPage4";
         }
 
         /// <summary>
@@ -366,9 +389,9 @@ namespace RunTimeRecords_CSDNF
                 // 監視タブの場合
                 dirctoryPath = Settings.Instance.SaveFolderPath;
             }
-            else if (tabControl1.SelectedTab.Name == "tabPage3")
+            else if (tabControl1.SelectedTab.Name == "tabPage3" || tabControl1.SelectedTab.Name == "tabPage4")
             {
-                // 対象タブの場合
+                // 対象タブの場合 または 辞書タブの場合
                 dirctoryPath = Settings.Instance.MasterFolderPath;
             }
             // 関連付けでフォルダを開く
@@ -391,6 +414,83 @@ namespace RunTimeRecords_CSDNF
         private void SearchButton_Click(object sender, EventArgs e)
         {
             Summary();
+        }
+
+        /// <summary>
+        /// 辞書一覧内のイベント
+        /// ・削除ボタンが押下された場合、該当データを削除する。
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AllDictionaryDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // 削除ボタンが押下された場合
+            if (allDictionaryDataGridView.Columns[e.ColumnIndex].Name == "deleteDictListButton")
+            {
+                // 選択行の解析
+                DataGridViewRow row = allDictionaryDataGridView.Rows[e.RowIndex];
+                string dictKey = row.Cells[0].Value.ToString();
+                string dictVal = row.Cells[1].Value.ToString();
+                // ダイアログの表示
+                string deleteCaption = "辞書削除確認";
+                string deleteMessage = $"辞書「{dictKey} @ {dictVal}」を辞書から削除して宜しいですか？";
+                DialogResult result = MessageBox.Show(deleteMessage, deleteCaption, MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    // リストの削除・保存・表示
+                    dictFileDto.Remove(dictKey, dictFileDao);
+                    SetAllDictListView();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 辞書追加ボタンイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DictAddButton_Click(object sender, EventArgs e)
+        {
+            string dictKey = addDictExeFilePath.Text;
+            if (dictKey == string.Empty)
+            {
+                // ダイアログの表示
+                string caption = "辞書追加時必須項目確認";
+                string message = $"「実行ファイルパス」は必須入力項目です。";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                addDictExeFilePath.Focus();
+                return;
+            }
+
+            string dictVal = addDictWindowName.Text;
+            if (dictVal == string.Empty)
+            {
+                // ダイアログの表示
+                string caption = "辞書追加時必須項目確認";
+                string message = $"「変換後ウィンドウ名」は必須入力項目です。";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                addDictWindowName.Focus();
+                return;
+            }
+
+            // キー項目が既存の場合、ダイアログで確認する
+            if (dictFileDto.ExistsKey(dictKey))
+            {
+                // ダイアログの表示
+                string caption = "辞書上書き確認";
+                string message = $"辞書「{dictKey}」は存在しています。上書きして宜しいですか？";
+                DialogResult result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+            // ファイルの保存と再描画
+            dictFileDto.Add(dictKey, dictVal, dictFileDao);
+            SetAllDictListView();
+            // 入力欄のクリア
+            addDictExeFilePath.Text = "";
+            addDictWindowName.Text = "";
         }
     }
 }
