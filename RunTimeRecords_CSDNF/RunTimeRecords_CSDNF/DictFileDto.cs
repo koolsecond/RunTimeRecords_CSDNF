@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace RunTimeRecords_CSDNF
 {
@@ -15,7 +11,7 @@ namespace RunTimeRecords_CSDNF
         /// <summary>
         /// 辞書内容
         /// </summary>
-        public Dictionary<string,string> DataList { get; set; }
+        public Dictionary<string, string> DataList { get; set; }
 
         /// <summary>
         /// 辞書に追加すると同時にファイルに保存する。

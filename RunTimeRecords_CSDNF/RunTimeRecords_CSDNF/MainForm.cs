@@ -452,7 +452,7 @@ namespace RunTimeRecords_CSDNF
         private void DictAddButton_Click(object sender, EventArgs e)
         {
             string dictKey = addDictExeFilePath.Text;
-            if(dictKey == string.Empty)
+            if (dictKey == string.Empty)
             {
                 // ダイアログの表示
                 string caption = "辞書追加時必須項目確認";

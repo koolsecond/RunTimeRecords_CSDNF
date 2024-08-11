@@ -96,7 +96,7 @@ namespace RunTimeRecords_CSDNF
                 try
                 {
                     // 実行パスが変換リストに存在している場合はウィンドウ名を書き換える
-                    if ( convdict != null && convdict.ContainsKey(executablePath) )
+                    if (convdict != null && convdict.ContainsKey(executablePath))
                     {
                         windowTitle = convdict[executablePath];
                     }
