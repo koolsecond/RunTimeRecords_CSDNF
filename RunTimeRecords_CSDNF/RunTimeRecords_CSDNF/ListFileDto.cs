@@ -26,7 +26,7 @@ namespace RunTimeRecords_CSDNF
         }
 
         /// <summary>
-        /// データリストに追加すると同時にファイルに保存する。
+        /// データリストから削除すると同時にファイルに保存する。
         /// </summary>
         /// <param name="data"></param>
         /// <param name="listFileDao"></param>
