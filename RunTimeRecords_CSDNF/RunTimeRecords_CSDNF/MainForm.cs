@@ -148,7 +148,7 @@ namespace RunTimeRecords_CSDNF
         void OnTimerTick(object sender, EventArgs e)
         {
             // 実行中プロセスを取得
-            ProcessesDao.GetProcessList(processList, whiteList.DataList, blackList.DataList);
+            ProcessesDao.GetProcessList(processList, whiteList.DataList, blackList.DataList, dictFileDto.DataList);
             // 取得した値で差し替え
             SetProcessListView();
             // 自動保存

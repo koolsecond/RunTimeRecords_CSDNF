@@ -38,7 +38,7 @@ namespace RunTimeRecords_CSDNF
         /// <summary>
         /// 実行中のプロセスリストを取得
         /// </summary>
-        public static List<ProcessDto> GetProcessList(List<ProcessDto> processList, List<string> whiteList, List<string> blackList, Dictionary<string, string> convdict = null)
+        public static List<ProcessDto> GetProcessList(List<ProcessDto> processList, List<string> whiteList, List<string> blackList, Dictionary<string, string> convdict)
         {
             var nowTime = DateTime.Now;
 
